@@ -1,0 +1,23 @@
+@use "base/variables" as v;
+@use "base/mixins" as m;
+
+.formulario {
+    margin-top: v.$separacion;
+    .campo {
+        display: flex;
+        align-items: center;
+        margin-bottom: 2rem;
+        label {
+            flex: 0 0 10rem; 
+            // flex-grow(factor crecimiento) flex-shrink(factor decrecimiento) flex-basis(medida fija) 
+        }
+        input {
+            flex: 1; // flex-grow(factor crecimiento) -> que tome todo el espacio disponible que pueda
+            padding: 1rem;
+            border: none;
+            background-color: lighten($color: v.$rojo, $amount: 40%);
+            background-color: lighten(v.$gris, 40%);
+        }
+    }
+    border: 1px solid #000000;
+}

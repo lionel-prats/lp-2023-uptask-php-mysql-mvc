@@ -19,3 +19,13 @@ p {
     color: v.$gris;
     line-height: 1.8;
 }
+.tagLine {
+    font-family: v.$fuente_headings;
+    font-size: 3rem;
+    font-weight: 900;
+    text-align: center;
+    color: v.$negro;
+}
+.descripcion-pagina {
+    text-align: center;
+}

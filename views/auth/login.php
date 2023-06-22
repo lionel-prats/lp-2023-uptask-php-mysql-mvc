@@ -1,6 +1,6 @@
 <div class="contenedor">
     <h1>UPTask</h1>
-    <p>Crea y Administra tus Proyectos</p>
+    <p class="tagLine">Crea y Administra tus Proyectos</p>
 </div>
 <div class="contenedor-sm">
     <p class="descripcion-pagina">Iniciar Sesión</p>

@@ -49,3 +49,5 @@ public function comprobarRutas() {
     // $currentUrl = $_SERVER['PATH_INFO'] ?? '/';
     $currentUrl = $_SERVER['REQUEST_URI'] ?? '/';
 }
+
+*** añ final revertí este cambio porque en local comprobé que podía traerme problemas con algunas rutas (calculo que la propiedad $_SERVER['REQUEST_URI'] debe existir en servidores remotos, o algo por el estilo)
