@@ -1,0 +1,10 @@
+Creé el repo remoto en github y lo sincronizo con el proyecto:
+
+git init 
+git config user.email "lionel.prats.c@gmail.com"
+git config user.name "lionel-prats"
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/lionel-prats/lp-2023-uptask-php-mysql-mvc.git
+git push -u origin main

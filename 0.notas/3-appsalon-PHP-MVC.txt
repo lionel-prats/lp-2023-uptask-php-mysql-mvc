@@ -1,0 +1,1355 @@
+VIDEO 444 
+
+npm install -> para instalar node_modules con las dependencias que vamos a necesitar (por default ya teníamos el package.json) 
+
+npm run gulp -> para escuchar por cambios en archivos .scss, .js, imagenes, etc.
+
+-----
+
+VIDEO 445 
+
+composer init -> para crear el composer.json (tendra las dependencias de PHP, no las del frontend ni las de NPM, esas estan en el package.json)
+
+configuracion en la consola vvv 
+
+- Package name (<vendor>/<name>) [user/appsalon-php-mvc]: lionelprats/appsalon-php-mvc
+- Description []: Proyecto PHP 8.1.10, MVC, SQL SASS, Gulp
+- Author [lionel-prats <lionel.prats.c@gmail.com>, n to skip]: 
+- Minimum Stability []: 
+- Package Type (e.g. library, project, metapackage, composer-plugin) []: project
+- License []: 
+- Would you like to define your dependencies (require) interactively [yes]? no
+- Would you like to define your dev dependencies (require-dev) interactively [yes]? no
+- Add PSR-4 autoload mapping? Maps namespace "Lionelprats\AppsalonPhpMvc" to the entered relative path. [src/, n to skip]: n
+- Do you confirm generation [yes]? yes
+
+con esto creamos el composer.json en la raiz del proyecto 
+
+* luego agregamos los namespaces para acceder a las clases del proyecto 
+* luego corremos composer update, ya que modificamos el composer.json (con esto se crea la carpeta /vendor con el archivo autoload.php) y se modifica el composer.lock
+
+* cd public
+* php -S localhost:3001 para arrancar el servidor de desarrollo (en este caso, en el puerto 3001)
+
+-----
+
+VIDEO 448 
+
+SASS - nueva sintaxis (explicion en el VIDEO 167) vvv
+
+* dentro de cada subcarpeta de la carpeta /src/scss...
+* debemos tener un archivo _index.scss 
+* en este archivo _index.scss "haremos un forward" a todos los archivos "hermanos" (es decir, a todos los archivos dentro de la misma subcarpeta) vvv 
+
+@forward "archivo1";
+@forward "archivo2";
+
+* en app.scss (el archivo principal de SASS, ubicada en /src/scss) "hacemos un use" a cada subcarpeta dentro /src/scss vvv 
+
+@use 'base';
+@use 'layout';
+
+----- 
+
+VIDEO 450 
+
+propiedades CSS vvv 
+
+flex: 0 0 10rem;
+shortcut for flex-grow, flex-shrink and flex-basis
+
+all:unset -> resetea todas las propiedades por defecto de un elemento html
+
+-----
+
+VIDEO 456
+
+* creé la base appsalon_mvc con tableplus 
+
+name: appsalon_mvc
+Encoding: utf_8
+Collation: utf8_general_ci
+
+* creacion tabla usuarios desde WorkBench (para evitar problemas que tiene tableplus para crear tablas)
+
+columna id vvv 
+
+Column Name   -> id 
+Datatype      -> int(11)
+PK            -> OK -> primary key
+NN            -> OK -> not null 
+AI            -> OK -> auto increment 
+
+*** luego agregue las columnas nombre, apellido, email, telefono, admin, confirmado y token
+
+*** codigo SQL para la creacion de la tabla (generado por Workbench) vvv 
+
+CREATE TABLE `appsalon_mvc`.`usuarios` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(60) NULL,
+  `apellido` VARCHAR(60) NULL,
+  `email` VARCHAR(30) NULL,
+  `telefono` VARCHAR(10) NULL,
+  `admin` TINYINT(1) NULL,
+  `confirmado` TINYINT(1) NULL,
+  `token` VARCHAR(15) NULL,
+  PRIMARY KEY (`id`)
+);
+
+-----
+
+VIDEO 457
+
+* creacion tabla servicios desde WorkBench (para evitar problemas que tiene tableplus para crear tablas) 
+
+*** codigo SQL para la creacion de la tabla (generado por Workbench) vvv 
+
+CREATE TABLE `appsalon_mvc`.`servicios` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `nombre` VARCHAR(60) NULL,
+  `precio` DECIMAL(5,2) NULL, // 5 digitos total maximo; 2 digitos total parte decimal
+  PRIMARY KEY (`id`)
+);
+
+*** insertando algunos registros vvv
+
+INSERT INTO `servicios` (`id`, `nombre`, `precio`) VALUES
+(1, 'Corte de Cabello Mujer', 900),
+(2, 'Corte de Cabello Hombre', 800),
+(3, 'Corte de Cabello Niño', 600),
+(4, 'Peinado Mujer', 800),
+(5, 'Peinado Hombre', 600),
+(6, 'Peinado Niño', 600),
+(7, 'Corte de Barba', 600),
+(8, 'Tinte Mujer', 3000),
+(9, 'Uñas', 4000),
+(10, 'Lavado de Cabello', 500),
+(11, 'Tratamiento Capilar', 1500);
+
+-----
+
+VIDEO 458
+
+* creacion tabla citas 
+
+*** codigo SQL para la creacion de la tabla vvv 
+
+CREATE TABLE citas (
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  fecha DATE NULL,
+  hora TIME NULL,
+  usuarioId INT(11),
+  PRIMARY KEY (id),
+  FOREIGN KEY (usuarioId) REFERENCES usuarios(id)
+);
+
+-----
+
+VIDEO 459
+
+* creacion tabla citasServicios 
+
+*** codigo SQL para la creacion de la tabla vvv 
+
+CREATE TABLE citasServicios (
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  citaId INT(11),
+  servicioId INT(11),
+  PRIMARY KEY (id),
+  FOREIGN KEY (citaId) REFERENCES citas(id),
+  FOREIGN KEY (servicioId) REFERENCES servicios(id)
+);
+
+*** notar que la tabla se creo como "citasservicios" (con la "s" de "servicios" en minuscula) 
+
+*** z.foreigns_keys_workbench.PNG -> captura de las preguntas del VIDEO 459, donde un alumno muestra como definir foreigns keys de la tabla citasServicios "manualmente" desde workbench  
+
+*** desde wirkbench, genere las foreign keys manualmente, ya que si bien todo funcionaba, habian dando vueltas unos nombres raros en el apartade de foreigns keys de workbench 
+*** este es el codigo SQL para editar los foreigns keys de ambas tablas tabla vvv
+
+ALTER TABLE `appsalon_mvc`.`citas` 
+DROP FOREIGN KEY `citas_ibfk_1`;
+ALTER TABLE `appsalon_mvc`.`citas` 
+ADD CONSTRAINT `usuarioId`
+FOREIGN KEY (`usuarioId`)
+REFERENCES `appsalon_mvc`.`usuarios` (`id`);
+
+ALTER TABLE `appsalon_mvc`.`citasservicios` 
+DROP FOREIGN KEY `citasservicios_ibfk_1`,
+DROP FOREIGN KEY `citasservicios_ibfk_2`;
+ALTER TABLE `appsalon_mvc`.`citasservicios` 
+ADD CONSTRAINT `citaId`
+FOREIGN KEY (`citaId`)
+REFERENCES `appsalon_mvc`.`citas` (`id`),
+ADD CONSTRAINT `servicioId`
+FOREIGN KEY (`servicioId`)
+REFERENCES `appsalon_mvc`.`servicios` (`id`);
+
+-----
+
+VIDEO 460 
+
+*** NOW() -> funcion SQL 
+*** en un campo DATE, retorna la fecha actual 
+*** en un campo TIME, retorna la hora actual (supongo que la toma del servidor, pero en las pruebas de este video coincide exactamente con la hora real de Argentina)
+
+Restricciones de Integridad Referencial...
+
+Para permitir eliminar un usuario por mas que sea FK de registros en otras tablas (el problema que habia con vendedores y propiedades en Bienes Raices - VIDEO 387 -) tenemos varias opciones vvv 
+*** en este proyecto, los usuarios son Fk en la tabla citas
+*** en este proyecto, las citas y los servicios son Fk en la tabla citasservicios
+
+
+vamos a solucionar ese problema con los registros de las tabla usuarios y citas vvv 
+
+en Table Plus vvv 
+
+CASCADE -> eliminando un registro padre, se eliminan los registros dependientes
+
+1. editar la FK usuarioId de citas
+2 On Update (que va a pasar cuando el usuario se edite...) -> CASCADE
+3 On Delete (que va a pasar cuando el usuario se elimine...) -> CASCADE
+
+*** con CASCADE, cuando elimino un registro padre, se eliminan los registros dependientes (en nuestro caso, los registros de citas son dependientes de los registros de usuarios)
+
+-----
+
+SET NULL -> eliminando un registro padre, la referencia en los registros dependientes queda con valor NULL
+
+1. editar la FK usuarioId de citas
+2 On Update (que va a pasar cuando el usuario se edite...) -> SET NULL
+3 On Delete (que va a pasar cuando el usuario se elimine...) -> SET null
+
+----
+
+VIDEO 461
+
+"Active Record mantiene una referencia en memoria, crea un objeto que es exactamente igual a lo que tenemos en la base de datos"
+
+* se habia olvidado de crear el campo password en usuarios
+* lo creo desde tableplus con # = 5 y al guardar cambios password se coloque como 5ta columna, corriendo a las que le siguen una posicion a la derecha 
+
+----- 
+
+VIDEO 468 
+
+password_hash($string, PASSWORD_DEFAULT);
+password_hash($string, PASSWORD_BCRYPT);
+
+* funcion PHP para hashear strings (usually use to hash passwords)
+
+----- 
+
+VIDEO 469
+
+Vamos a implementar el registro por e-mail basado en Tokens 
+
+el profesor usa la funcion PHP uniqid(), que genera un string alfanumerico de 13 digitos.
+
+*** ver consultas del video, ya que un alumno dice que esta funcion puede generar exactamente el mismo token (string) si dos usuarios crean un usuario exactamente al mismo tiempo desde 2 servidores distintos.
+*** como solucion, sugiere usar la combinacion de funciones PHP bin2hex(random_bytes(8))
+*** ver y probar con el script de abajo e ir a la fuente para leer respuesta de otro alumno y documentacion adjunta vvv
+
+echo '<pre>';
+for($i=0;$i<20;$i++) {
+    echo uniqid(), PHP_EOL;
+    //echo bin2hex(random_bytes(8)), PHP_EOL, PHP_EOL;
+}
+echo '</pre>';
+
+*** lo que creo entender es que la funcion unqid() genera alfanumericos "determinados" o "fijos" en el tiempo; con el for(){} de arriba se ve claramente que los tokens generados por uniqid() van difiriendo muy de a poco y eso explica el planteo del primer alumno
+
+----- 
+
+VIDEO 470 
+
+el profesor de arranque usa el termino "bannear" cuando habla sobre la capa de seguridad que agregamos con el tema de enviarle un token al usuario para asegurarnos que no es un bot el que esta registrando usuarios en nuestra db -> escuchar y comprender que es lo que esta explicando
+
+----- 
+
+"vamos a estar usando MailTrap de nuevo para probar los emails" 
+
+"vamos a instalar la extension de PHPMailer" vvv 
+
+composer require phpmailer/phpmailer
+* con este comando instalo la libreria phpmailer en el proyecto (en los hechos, se creo la carpeta /vendor/phpmailer, que es lo que llamamos "libreria", "dependencia", "extension", etc.)
+
+composer update -> mensaje por consola vvv 
+
+Loading composer repositories with package information
+Updating dependencies
+Nothing to modify in lock file
+Installing dependencies from lock file (including require-dev)
+Nothing to install, update or remove
+Generating autoload files
+1 package you are using is looking for funding.
+Use the `composer fund` command to find out more!
+No security vulnerability advisories found
+
+*** al respecto de composer update -> "instalé una nueva dependencia y la actualizo para que el archivo /vendor/autoload.php ya cargue esta libreria que acabamos de instalar"
+
+*** APRENDIZAJE -> instalo una libreria/dependencia/extension en un proyecto PHP -> acto seguido corro composer update para que funcione el autoload de clases
+
+* creo la carpeta /classes y dentro la clase "helper" Email (/classes/Email.php), que nos va a permitir enviar un email
+* esta clase va a contener toda la configuracion para enviar emails correctamente, que vimos en bienes raices (y en los proyectos locales de prueba phpmailer y phpmailer2023)
+
+* modifique el "autoload" del composer.json para agregar el namespace de /classes, asi que luego vuelvo a correr composer update para actualizar nuestro autoload vvv
+
+"autoload": {
+    "psr-4": {
+        "MVC\\": "./",
+        "Controllers\\": "./controllers",
+        "Model\\": "./models",
+        "Classes\\": "./classes"
+    }
+},
+
+----- 
+
+VIDEO 471 
+
+ENVIAR MAIL DE CONFIRMACION DE CUENTA AL USUARIO LUEGO DE GENERAR EL TOKEN DE SEGURIDAD:
+
+En el VIDEO 426 pregunte vvv
+
+Hola. En $mail->addAddress('xxx', 'xxxx'); coloqué una casilla de correo donde quiero que lleguen los correos que se envían desde el formulario de contacto de la app y no están llegando. Si llegan correctamente al inbox de Mailtrap. Como lo soluciono?
+
+Respuesta de un profesor asistente vvv 
+
+Mailtrap es un servidor de pruebas, por lo que sin importar a que correo quieras enviarlo, si usas el servidor smtp de mailtrap siempre llegaran a la bandeja de tu mailtrap.
+
+Puedes usar servicios como https://sendinblue.com/ para enviar correos reales, en este caso el destinatario si debe ser un correo real y existente al que tengas acceso para comprobarlo.
+
+-----
+
+VIDEO 472
+
+* Retomé el curso el 11/5/23 en este video (esta explicando cosas del registro de usuarios)
+
+----- 
+
+VIDEO 473 
+
+array_shift() -> funcion PHP que elimina y retorna el primer elemento de un array 
+
+formato del array de $alertas (mensaje de error, exito, etc, en los envíos de datos desde formularios) en ActiveRecord.php vvv
+
+array(1) {
+  ["error"]=>
+  array(5) {
+    [0]=>
+    string(24) "El nombre es obligatorio"
+    [1]=>
+    string(26) "El apellido es obligatorio"
+    [2]=>
+    string(27) "El teléfono es obligatorio"
+    [3]=>
+    string(23) "El email es obligatorio"
+    [4]=>
+    string(64) "El password es obligatorio y debe contener al menos 6 caracteres"
+  }
+}
+
+*** en /views/templates/alertas.php tenemos el template que reutilizamos para renderizar las alertas
+
+-----
+
+VIDEO 475
+
+en Usuario.php/validarLogin() vvv
+
+self::$alertas -> atributo proteced y static (array vacío) heredado de ActiveRecord con la finalidad de notificar al cliente de posibles errores, cargando eventualues mensajes de error en dicho array para que se muestren por pantalla llegado el caso.
+
+-----
+
+VIDEO 476 
+
+- password_hash($string, PASSWORD_DEFAULT) -> funcion nativa PHP para hashear un password al momento de crear un usuario nuevo en la DB
+
+- password_hash($string, PASSWORD_BCRYPT) -> funcion nativa PHP para hashear un password al momento de crear un usuario nuevo en la DB
+
+- password_verify($string_no_hasheado, $string_hasheado) -> funcion nativa PHP para validar passwords en un login
+
+----- 
+
+VIDEO 478
+
+* Comentario de un alumno en el VIDEO 469, relacionado al VIDEO 478 vvv
+
+Por cierto, en el capítulo 478, la función "s" para sanitizar el HTML tampoco es tan fiable. Yo usé ctype_alnum
+
+if(!ctype_alnum($token)) 
+{
+    // token no válido
+}
+
+-----
+
+VIDEO 488 
+
+Estilos para el formulario de la vista "/cita" vvv 
+
+/src/scss/componentes/_formulario.scss
+
+Luego crea un nuevo nuevo .scss para definir estilos de "/cita" vvv
+/src/scss/layout/_cita.scss 
+
+-----
+
+VIDEO 489 
+
+* darken & lighten -> mixins de SASS vvv
+
+background-color: darken(v.$azul, 10%);
+background-color: lighten(v.$azul, 10%);
+
+----- 
+
+data recuperada del proyecto frontend FESTIVAL DE MUSICA vvv 
+
+Como crear un snippet en VSCode:
+Ctrl + Shift + P (en Windows)
+Buscar "Snippets: Configure User Snippets"
+Buscar "scss.json (SCSS)"
+Es un json para configurar snippets de scss.
+Ver el archivo "scss.json (SCSS)" y repasar el video si hace falta (VIDEO 178)
+
+-----
+
+VIDEO 490 
+
+/views/cita/index.php -> &laquo -> "esto se conoce como ENTIDAD"
+
+---- 
+
+VIDEO 491 
+
+/views/layout.php vvv 
+
+<?php echo $script ?? ''; ?>
+
+* de esta manera estamos diciendo "imprimí $script, si no existe, no imprimas nada"
+* es una especie de if ternario
+* a "??" le llamamos placeholder
+
+----- 
+
+VIDEO 492 
+
+en /src/js/app.js vvv 
+
+document.addEventListener('DOMContentLoaded', () => {
+  * aca va a ir todo nuestro codigo JS, 
+});
+
+* 'DOMContentLoaded' es un evento en JavaScript que se dispara cuando el árbol DOM (Documento Object Model) de una página web ha sido completamente cargado y parseado. 
+  El evento 'DOMContentLoaded' ocurre después de que el navegador ha construido el árbol DOM a partir del código HTML de la página, pero antes de que se hayan descargado todos los recursos externos, como imágenes o scripts adicionales.
+
+----- 
+
+VIDEO 495
+
+Comentario util jQuery usuario vvv
+
+Para los que usen JQuery. -> Buenas, gente.
+
+En el día de hoy les traigo el mismo código que contiene la misma funcionalidad del tab; pero agregada con JQuery en este proyecto.
+
+Tabs()
+{
+    return $('.btn-tab').on("click", (e) => {
+    e.preventDefault();
+    let step = parseInt(e.target.dataset.step);
+        this.ShowSection(step);
+    })        
+}
+ 
+ShowSection(section)
+{
+    $('.show').removeClass('show');
+    $(`.btn-tab`).removeClass('actual');
+    $(`[data-step="${section}"]`).addClass('actual');
+    $(`#step-${section}`).addClass('show');
+}
+NOTA: Pueden agregar JQuery por medio de un CDN (link:  Link para JQuery.), para que no batallen y puedan usar AJAX. Ya en caso de que lo quieran agregar con NPM y quieran agregar otras librerías como SweetAlert2, deben de hacer una configuración extra con Webpack y modificar el gulpfile; pero requiere de conocimientos acerca de ES6.
+
+----- 
+
+VIDEO 497 
+
+API = Application Programming Interface (capa de abstraccion)
+
+Repaso de lo aprendido (Jueves 8/6/23):
+
+Creamos el endpoint /api/servicios
+el controlador del endpoint vvv 
+- ejecuta el metodo estatico all() (puede ser invocado sin instanciar la clase o el modelo) del modelo Servicio -> herencia del modelo ActiveRecord
+
+***
+- all() le pasa la consulta SQL (SELECT * FROM servicios) a consultarSQL
+- consultarSQL invoca a $db, que es un objeto instancia de la conexión a la DB (supongo que una clase), y a un metodo propio del objeto, query(), que recibe el string de una consulta SQL y lo ejecuta en la DB 
+- iteramos el resultado de la consulta con un while y el metodo fetch_assoc() del objeto/instancia de mysqli $resultado 
+- cada iteracion es un registro de la respuesta de la consulta, en formato array asociativo
+- cada uno de estos registros (array asociativos), se lo pasamos al metodo crearObjeto(), que los convierte en un objeto/instancia del modelo/clase Servicio 
+- vamos almacenando en $array estos objetos
+- liberamos la memoria con $resultado->free(); ???
+
+all() -> consultarSQL() -> crearObjeto()
+*** 
+
+la ejecucion de all() la guarda en $servicios, y el metodo del endpoint termina retornando un json de ese array de objetos con la funcion nativa de PHP json_encode()
+
+----- 
+
+VIDEO 499
+
+javaScript - funciones asíncronas - Async Await
+
+- ejemplo didactico de para que puede servir un bloque try cath
+- si intento imprimir una variable no definida, js me tira error y deja de ejecutarse el codigo a partir de esa linea
+- si en cambio, esto mismo lo hago dentro de un try catch, este error no cortara la ejecucion del codigo que sigue
+try {
+    console.log(respuesta);
+} catch (error) {
+    console.log(error);
+}
+
+----- 
+
+VIDEO 500
+
+ejemplo de destructuring en JS vvv
+const objeto = {
+    nombre: "Lionel",
+    apellido: "Prats",
+    edad: "37"
+}
+
+const {nombre, apellido} = objeto;
+
+console.log(`Hola ${nombre} ${apellido}!!`);
+
+-----
+
+VIDEO 501
+
+agregué snippet para el mixin grid (SCSS / SASS):
+
+1) Ctrl + shift + "P"
+2) Click en "Snippets: Configure User Snippets"
+3) Click en scss.json
+4) Agrego al .json la configuración del nuevo snippet vvv 
+"grid": {
+  "prefix": "grid",
+  "body": [
+    "@include m.grid($1, $2);"
+  ]
+}
+
+-----
+
+VIDEO 502
+
+/src/js/app.js -> gran explicacion con un ejemplo de como usar destructuring y el spread operator de javaScript vvv 
+
+1) 
+const {servicios} = cita;
+* extraigo en la variable servicios, la propiedad 'servicios' del objeto 'cita' (declarado al inicio del archivo) usando destructuring de javaScript
+
+2) 
+cita.servicios = [...servicios, servicio];
+* reescribo el array cita.servicios usando el spread operator de javaScript 
+* con esta tecnica, al hacer click sobre un <div>, cita.servicios quedara constituido por el contenido previo al click + el nuevo servicio seleccionado por el usuario
+* es decir, en cita.servicio se ira agregando cada servicio que el usuario vaya seleccionando desde la pantalla 
+
+OBSERVACION:
+* aparentemente se podría haber hecho lo mismo con una sola linea de código vvv 
+cita.servicios.push(servicio);
+
+-----
+
+VIDEO 503
+
+repasando algo anterior vvv 
+
+document.querySelector(`[data-paso="${paso}"]`); (/src/js/app.js)
+* este selector es un "selector de atributo"
+* captura cualquier <element data-paso="${paso}">
+
+-----
+
+VIDEO 504
+
+array method some() vvv 
+* metodo para recorrer un array y verificar si se da algún tipo de validacion especificada por nosotros (retorna TRUE si se da, FALSE si no se da)
+* en este ejemplo, dado el array programadores, queremos saber si alguno tiene 40 años.
+
+let programadores = [
+    {
+        nombre: "Juan",
+        edad: 24
+    },
+    {
+        nombre: "Marcelo",
+        edad: 18
+    },
+    {
+        nombre: "Daniel",
+        edad: 34
+    },
+    {
+        nombre: "Gonzalo",
+        edad: 27
+    }
+];
+
+const edad = 40;
+
+console.log( programadores.some( programador => programador.edad === edad) ); 
+*** TRUE si hay un programador de 40 años, FALSE si no lo hay
+
+*** ejemplo de como eliminar a Marcelo del array programadores vvv
+
+programadores = programadores.filter(programador => programador.nombre !== "Marcelo");
+
+-----
+
+VIDEO 506 
+
+en /src/js/app.js 
+
+function seleccionarFecha() {
+    const inputFecha = document.querySelector('#fecha');
+    inputFecha.addEventListener('input', function(e){
+        console.log("seleccionaste una fecha");
+        console.log(e.target.value);
+        console.log(inputFecha.value);
+    })
+}
+
+*** listener evento "input" de javascript 
+*** escucha por un nuevo estado en el input que nos interesa
+
+----- 
+
+objeto Date javaScript (prueba realizada el Sábado 10/06/2023 a las 15:31:40) vvv
+
+console.log(`new Date() = ${new Date()}`);
+console.log({
+    aSun: 0,
+    bMon: 1,
+    cTue: 2,
+    dWed: 3,
+    eThu: 4,
+    fFri: 5,
+    gSat: 6,
+});
+console.log(`new Date().getUTCDay() = ${new Date().getUTCDay()} (diaSemana - Sat)`);
+console.log({
+    aJan: 0,
+    bFeb: 1,
+    cMar: 2,
+    dApr: 3,
+    eMay: 4,
+    fJun: 5,
+    gJul: 6,
+    hAug: 7,
+    iSep: 8,
+    jOct: 9,
+    kNov: 10,
+    lDec: 11,
+});
+console.log(`new Date().getUTCMonth() = ${new Date().getUTCMonth()} (mes - June)`);
+console.log(`new Date().getUTCDate() = ${new Date().getUTCDate()} (dia)`);
+console.log(`new Date().getUTCFullYear() = ${new Date().getUTCFullYear()} (año)`);
+console.log(`new Date().getHours() = ${new Date().getHours()} (hora)`);
+console.log(`new Date().getMinutes() = ${new Date().getMinutes()} (minutos)`);
+console.log(`new Date().getSeconds() = ${new Date().getSeconds()} (segundos)`);
+console.log(`new Date().getMilliseconds() = ${new Date().getMilliseconds()} (milisegundos)`);
+console.log(`new Date().getTime() = ${new Date().getTime()} (fecha en milisegundos - transcurridos desde el 1970-01-01 00:00:00 00000 -)`);
+console.log(`new Date().getTimezoneOffset() = ${new Date().getTimezoneOffset()} (desplazamiento de zona horaria actual en minutos entre la hora local y la hora UTC (Coordinated Universal Time), considerando el horario de verano si corresponde. El valor retornado es un número entero que representa la diferencia en minutos entre la hora local y UTC. Por ejemplo, si el resultado es -120, significa que la hora local está 2 horas detrás de UTC (UTC+2). Si el resultado es +180, significa que la hora local está 3 horas por delante de UTC (UTC-3).)`);
+console.log('UTC = \'Coordinated Universal Time (Tiempo Universal Coordinado)\'');
+console.log('GMT = \'Greenwich Mean Time (Tiempo Medio de Greenwich)\'');
+
+new Date() = Sat Jun 10 2023 15:31:40 GMT-0300 (hora estándar de Argentina)
+new Date().getUTCDay() = 6 (diaSemana - Sat)
+new Date().getUTCMonth() = 5 (mes - June)
+new Date().getUTCDate() = 10 (dia)
+new Date().getUTCFullYear() = 2023 (año)
+new Date().getHours() = 15 (hora)
+new Date().getMinutes() = 31 (minutos)
+new Date().getSeconds() = 40 (segundos)
+new Date().getMilliseconds() = 686 (milisegundos)
+new Date().getTime() = 1686421900686 (fecha en milisegundos - transcurridos desde el 1970-01-01 21:00:00 00000 -)
+new Date().getTimezoneOffset() = 180 (desplazamiento de zona horaria actual en minutos entre la hora local y la hora UTC (Coordinated Universal Time), considerando el horario de verano si corresponde. El valor retornado es un número entero que representa la diferencia en minutos entre la hora local y UTC. Por ejemplo, si el resultado es -120, significa que la hora local está 2 horas detrás de UTC (UTC+2). Si el resultado es +180, significa que la hora local está 3 horas por delante de UTC (UTC-3).)
+UTC = 'Coordinated Universal Time (Tiempo Universal Coordinado)'
+GMT = 'Greenwich Mean Time (Tiempo Medio de Greenwich)'
+
+-----
+
+VIDEO 507 
+
+Curso JS Dorian -> DOM - Insertar, clonar y borrar elementos vvv 
+https://www.youtube.com/watch?v=NnRd-glMupU&list=PLROIqh_5RZeBAnmi0rqLkyZIAVmT5lZxG&index=31
+
+----- 
+
+VIDEO 508
+
+PHP -> date() -> https://www.php.net/manual/es/function.date.php
+
+----- 
+
+VIDEO 510 
+
+Object.values() -> metodo nativo de JS para convertir un objeto en un array 
+
+const object = {
+    nombre: "Lionel",
+    apellido: "Prats",
+    edad: "37"
+}
+
+const array = Object.values(object);
+
+console.log(object);
+console.log(array);
+
+----- 
+
+VIDEO 514
+
+explicacion de como aprovechar el objeto Date()
+
+ejemplo de como usar el spread operator + algunos stringMethods de JS vvv 
+
+const string = "hola mundo";
+const [primerLetra, ...restoString] = string;
+console.log(primerLetra);
+console.log(restoString);
+console.log(restoString.join('%20'));
+
+-----
+
+VIDEO 516
+
+AJAX = Asynchronous JavaScript And XML
+
+----- 
+
+VIDEO 519 
+
+Explica como trabajar con APIs de distintas maneras: 
+- POSTMAN 
+- THUNDERCLIENT 
+- Desde la las herramientas del desarrollador en el navegador: Network -> Fetch/XHR
+
+----- 
+
+VIDEO 522 
+
+Repaso de lo aprendido (Lunes 12/6/23):
+
+Configuramos el metodo guardar() del controlador APIController, que se va a encargar de guardar en la DB las reservas de turnos que hagan los clientes desde /cita
+
+1) El usuario selecciona servicio/s, hora, fecha y confirma 
+2) El click en "Reservar turno" ejecuta la funcion reservarCita() en /src/js/app.js, que usando fetch, va a enviar por POST al servidor (/api/citas) todos los datos en el objeto cita para su almacenamiento en la DB 
+3) /api/citas ejecuta el metoodo guardar() del controlador APIController
+4) Dentro del metodom, como primer paso, instanciamos en $cita el modelo Cita, pasándole comoa argumentos lo que llegó en el body de la petición desde app.js (el array global $_POST)
+5) Luego ejecutamos el metodo publico guardar() de Cita, heredado del modelo ActiveRecord 
+6) Este metodo UPDATEA o INSERTA un registro en la tabla de turno, dependiendo si la instancia del modelo que haya llamado a guardar() incluye o no id (con id, UPDATE, sin id, INSERT)
+7) En este caso, vamos a hacer un INSERT, por lo que guardar() de ActiveRecord, manda a llamar a crear()
+8) crear() almacena en $atributos (scope local) la ejecucion del metodo sanitizarAtributos()
+9) sanitizarAtributos() almacena en $atributos (scope local) la ejecucion del metodo atributos()
+10) atributos() recorre $columnasDB (atributo protected static de ActiveRecord, array, que se completa en cada modelo que hereda con las columnas de su tabla relacionada en la DB) con un foreach y retorna un array con los datos (columnas) de un modelo instanciado para crear o actualizar un registro en una tabla
+11) de nuevo en sanitizarAtributos(), itera el array $atributos (paso 9) y lo mapea en el array $sainitizado, que por cada iteracion y almacenamiento de dato, ejecuta el metodo nativo escape_string(), de la instancia del objeto mysqli almacenada en $db (conexion a la DB), que sanitiza los datos que le pasamos como argumento, evitando asi la inyeccion SQL 
+12) de nuevo en crear(), ya sanitizados los datos, arma la consulta SQL (string) y ejecuta el metodo nativo query(), de la instancia del objeto mysqli almacenada en $db (conexion a la DB), que ejecuta cualquier instruccion SQL que le pasemos como argumento (SELECT, INSERT INTO, UPDATE, etc) 
+13) Finalmente, crear() retorna un array con el "resultado" de la consulta (TRUE o FALSE) y el "id" si el INSERT fue exitoso 
+14) de nuevo en guardar(), este metodo retorna el mismo array que le llego de crear(), en este caso, al metodo guardar() del controlador ApiController -> json_encode($resultado) = {"resultado":true,"id":4}
+
+----- 
+
+VIDEO 523
+
+Repasando lo aprendido (VIDEO 519):
+
+En las herramientas del desarrollador:
+- En Network
+  - En Fetch/XHE
+    Puedo ver la info de la peticion POST que acabamos de hacer al servidor, a /api/citas, para guardar un registro en la tabla citas de la DB
+
+----- 
+
+VIDEO 524
+
+Sweet Alert 
+
+----- 
+
+VIDEO 525
+
+Tira tips de como debuguear errores cuando estamos trabajando con Fetch para conectar el front con el back de nuestra aplicacion, como estamos haciendo en este proyecto
+
+----- 
+
+VIDEO 526 
+
+INSERT masivo en citasservicios dentro del controlador ApiController, metodo guardar()
+
+-----
+
+VIDEO 527 
+
+Proteger rutas /cita vvv 
+
+1) Creamos una funcion helper isAuth() en /includes/funciones.php
+
+1.1) esta funcion verifica si existe $_SESSION["login"]; si no existe, redirige al visitante al login (/)
+*** $_SESSION va a estar disponible en la ejecucuion de isAuth() porque /includes/funciones.php esta incluido en /includes/app.php; a su vez, /includes/app.php esta incluido en /public/index.php, que al final del archivo ejecuta $router->comprobarRutas() y es aqui donde se inicia sesion ( session_start() ) 
+
+2) como esta ejecucion de comprobarRutas() es la que manda a llamar a los distintos controladores segun las distintas peticiones posibles, en el caso de /cita, cuando se ejecute el controlador correspondiente (CitaController->index()) session_start() ya viene iniciado desde Router.php
+*** entonces, al ejecutar el helper isAuth() (funciones.php) dentro del controlador de /cita, el helper (o middleware (?)) va a funcionar como esperamos 
+
+
+*** En bienesraicesMVC utilizo otra tecnica (esa proteccion de rutas la hizo dentro del archivo Router.php)
+*** ver Router.php de bienesraicesMVC o z_notas.txt del mismo proyecto (apartado "Repasando lo aprendido")
+
+-----
+
+VIDEO 531
+
+tutorial explicativo tipos de JOIN -> https://www.w3schools.com/sql/sql_join.asp
+*** consultas SQL de ejemplo que va mostrando el profesor a lo largo del video, con distintos tipos de JOIN 
+SELECT * FROM citas C LEFT OUTER JOIN usuarios U ON C.usuarioId = U.id; 
+SELECT * FROM citas C INNER JOIN usuarios U ON C.usuarioId = U.id; 
+SELECT * FROM citas C LEFT JOIN usuarios U ON C.usuarioId = U.id; 
+
+*** consulta de ejemplo que arma el profesor hacia el final del video vvv 
+SELECT * FROM citas 
+LEFT OUTER JOIN usuarios 
+ON citas.usuarioId = usuarios.id 
+LEFT OUTER JOIN citasservicios 
+ON citasservicios.citaId = citas.id  
+LEFT OUTER JOIN servicios 
+ON servicios.id = citasservicios.servicioId  
+
+*** consulta armada por Lio hacia el final del video
+SELECT U.nombre, U.apellido, C.fecha, C.hora, S.nombre, S.precio
+FROM citas C 
+LEFT OUTER JOIN usuarios U ON U.id = C.usuarioId 
+LEFT OUTER JOIN citasservicios CS ON CS.citaId = C.id  
+LEFT OUTER JOIN servicios S ON S.id = CS.servicioId
+
+-----
+
+17/6/23 
+
+* quise retomar el cuso, empezé por querer levantar el servicio de MySQL desde XAMPP en el puerto 3306,como siempre, y falló. Acá el mensaje de error que tiró la consola de XAMPP:  
+
+14:07:46  [mysql] 	Error: MySQL shutdown unexpectedly.
+14:07:46  [mysql] 	This may be due to a blocked port, missing dependencies, 
+14:07:46  [mysql] 	improper privileges, a crash, or a shutdown by another method.
+14:07:46  [mysql] 	Press the Logs button to view error logs and check
+14:07:46  [mysql] 	the Windows Event Viewer for more clues
+14:07:46  [mysql] 	If you need more help, copy and post this
+14:07:46  [mysql] 	entire log window on the forums
+
+* encontré este tutorial YT para solucionar el problema (el error que muestra el tipo al principio del video en su consola de XAMPP es exactamente el mismo) vvv
+* https://www.youtube.com/watch?v=5cCT1ThLqqU&t=81s 
+
+-----
+
+* paso a paso de lo que explica (el tipo del tutorial) que hay que hacer para solucionarlo:
+1) En C:\xampp\mysql
+   1.1) la carpeta "data" la renombro como "data-old-fallo-el-17-06-23" 
+   1.2) creo una nueva carpeta llamada "data"
+   1.3) copio el contenido de la carpeta "backup" dentro de la nueva carpeta "data"
+   1.4) entramos en la carpeta "data-old-fallo-el-17-06-23", copiamos el archivo "ibdata1", y lo pegamos en la nueva carpeta "data" (reemplazamos el archivo con el mismo nombre, que ya venía en el contenido de la carpeta "backup" y por eso existe en "data") 
+   1.5) entramos en "data-old-fallo-el-17-06-23" y copiamos todas las carpetas, excepto "mysql", "performance_schema" y "phpmyadmin" y las pegamos dentro de "data"
+   *** observar que si pega en "data" la carpeta "test" de "data-old-fallo-el-17-06-23", reemplazando la carpeta "test" que ya habíamos pegado, proveniente de "backup"
+   *** observar que todas las carpetas que pegamos de "data-old-fallo-el-17-06-23" en "data" (menos "test" explicado en el punto anterior) son las bases de datos "propias, las que fui creando", que tenía en mi conexión mysql local (127.0.0.1)
+   *** en el tutorial deje la pregunta de porque sucede el error -> "Gracias, pude solucionar el problema! Solo me queda la duda de que significa el error y/o por qué sucede, ya que hasta ayer no tenía el problema, creo haber apagado los servicios corectamente, y hoy cuando quise prender el servicio de MySQL como todos los días, me encontré con este error. Gracias nuevamente!" (17/6/23 15:20 hs). Estar atento a la respuesta!!!
+
+----- 
+
+* encontre un articulo en stackoverflow con una consulta por este mismo problema, y la mejor respuesta ofrece esta misma solucion vvv 
+* https://stackoverflow.com/questions/18022809/how-to-solve-error-mysql-shutdown-unexpectedly
+
+----- 
+
+*** analisis de Lio, de la solucion implementada siguiendo el tutorial, para tratar de entender que pasó:
+
+En los hechos, lo que hice fue lo siguiente:
+1) vacie la carpeta "data", la deje totalmente vacia
+2) reutilize algunas carpetas y archivos de la carpeta "backup"
+3) reutilize algunas carpetas y archivos de la carpeta "data" que fallo (y que dejamos renombrada como "data-old-fallo-el-17-06-23")
+* archivos y carpetas de "backup" reutilizados
+  - las carpetas "mysql", "performance_schema" y "phpmyadmin"
+  - todos los archivos, excepto "ibdata1"
+* archivos y carpetas de "data-old-fallo-el-17-06-23" reutilizados
+  - todas las carpetas, excepto "mysql", "performance_schema" y "phpmyadmin" (vale decir que utilize las de "backup", por lo que puede ser que las carpetas "mysql", "performance_schema" y "phpmyadmin" originales se hayan modificado durante el tiempo y se hayan corrompido, y por eso haga falta el reemplazo)
+  - archivo "ibdata1"
+
+----- 
+
+*** solucion alternativa pensada por Lio (no probada) para no dejar colgada dentro de /mysql la carpeta "data-old-fallo-el-17-06-23"
+  - en la carpeta "data" reemplazar las carpetas "mysql", "performance_schema" y "phpmyadmin" por las mismas 3 que existen en "backup"
+  - en este punto noto que en la "data" que falló falta el archivo "ibtmp1" existente en "backup"
+  - copiar los archivos "aria_log.00000001", "aria_log_control", "ib_buffer_pool", "ib_logfile0", "ib_logfile1", "ibtmp1", "multi-master.info" y "my.ini" (conservar "ibdata1", que a simple vista se ve que pesa mucho mas que el de "backup", y sospecho que puede tener que ver con los datos de las distintas bases de datos) (no estoy seguro de que este paso sea necesario, ya que a simple vista noto que ambos grupos de archivos pesan lo mismo en kb, lo que me hace pensar que los de "data" esten en el mismo estado que los de "backup")
+  - borrar de "data" el resto de esos archivitos ligeros que se aparentemente se han ido generando (ver fecha de modificación) (digo aparentemente, porque en la nueva version de "data", que contiene solo los archivos de "backup" no aparece ese largo listado de archivitos -escribo esto el 17-06-23, habria que hacer un seguimiento de "data" y ver que va pasando en el tiempo-), inclusive el archivo "mysql_error.log" (que aparentemente registra logs de error, y que luego de la solucion aplicada noto que se genero de nuevo automaticamente -presumo que se genero al levantar por primera vez mysqli, luego de los cambios que hice en "data" siguiendo el tutorial-)
+
+*** 
+
+----- 
+
+VIDEO 532
+
+*** consulta de ejemplo que arma el profesor durante el video para expicar la funcion de SQL CONCAT() vvv 
+SELECT citas.id, CONCAT(citas.fecha, " ", citas.hora) AS fecha_cita FROM citas 
+LEFT OUTER JOIN usuarios 
+ON citas.usuarioId = usuarios.id 
+LEFT OUTER JOIN citasservicios 
+ON citasservicios.citaId = citas.id  
+LEFT OUTER JOIN servicios 
+ON servicios.id = citasservicios.servicioId  
+
+*** consulta de ejemplo que arma el profesor hacia el final del video vvv 
+SELECT citas.id, citas.hora, CONCAT(usuarios.nombre, " ", usuarios.apellido) AS cliente, usuarios.email, usuarios.telefono, servicios.nombre AS servicio, servicios.precio
+FROM citas 
+LEFT OUTER JOIN usuarios ON usuarios.id = citas.usuarioId 
+LEFT OUTER JOIN citasservicios ON citasservicios.citaId = citas.id  
+LEFT OUTER JOIN servicios ON servicios.id = citasservicios.servicioId  
+WHERE fecha = "2023-06-19"
+
+----- 
+
+VIDEO 534
+
+DICHOS DEL PROFESOR:
+*** Cuando necesitamos hacer consultas mas complejas a la DB, que joinee varias tablas, usualmente lo hacemos por medio de un query builder .
+*** Esto lo voy a explicar en la parte de PDO, mas adelante en el curso.
+
+----- 
+
+analisis del ActiveRecord::SQL() (aprox linea 164 de ActiveRecord)
+public static function SQL($query) {
+  $resultado = self::consultarSQL($query);
+  return $resultado;
+}
+1) recibe cualquier tipo de string valido para ejecutar una consulta SQL
+2) le pasa este string a ActiveRecord::consultarSQL(), y retorna la respuesta que le llega de este segundo metodo.  
+
+analisis del ActiveRecord::consultarSQL() (aprox linea 33 de ActiveRecord)
+public static function consultarSQL($query) {
+    $resultado = self::$db->query($query);
+    $array = [];
+    while($registro = $resultado->fetch_assoc()) {
+        $array[] = static::crearObjeto($registro);
+    }
+    $resultado->free();
+    return $array;
+}
+1)recibe el string de una consulta SQL ($query)
+2)se ejecuta el metodo query() de mysql, el cual ejecuta efectivamente la query recibida
+  $resultado = self::$db->query($query);
+3)itera los resultados de la consulta (pueden ser de 0 a n)
+  cada iteracion es un registro de la consulta, en formato array()  
+  pasa cada registro iterado al metodo ActiveRecord::crearObjeto(), para convertirlo en un objeto
+    analisis del ActiveRecord::crearObjeto() (aprox linea 60 de ActiveRecord)
+    protected static function crearObjeto($registro) {
+      $objeto = new static;
+      foreach($registro as $key => $value ) {
+          if(property_exists( $objeto, $key  )) {
+              $objeto->$key = $value;
+          }
+      }
+      return $objeto;
+    }
+    1) recibe un registro de una consulta a la base de datos en formato array ($registro)
+    Array
+    (
+        [id] => 111
+        [hora] => 09:45:00
+        [cliente] => Danilo Gerlo
+        [email] => lionelprats@hotmail.com
+        [telefono] => 1122049995
+        [servicio] => Corte de Cabello Hombre
+        [precio] => 80.00
+    )
+    2) crea una instancia del modelo que lo invoca (VIDEO 534 - AdmiCita)
+    Model\AdminCita Object
+    (
+        [id] => 
+        [hora] => 
+        [cliente] => 
+        [email] => 
+        [telefono] => 
+        [servicio] => 
+        [precio] => 
+    )
+    3) retorna el objeto/instancia del modelo que que lo invoca, que contiene toda la info del registro que le llego en formato array
+    Model\AdminCita Object
+    (
+        [id] => 111
+        [hora] => 09:45:00
+        [cliente] => Danilo Gerlo
+        [email] => lionelprats@hotmail.com
+        [telefono] => 1122049995
+        [servicio] => Corte de Cabello Hombre
+        [precio] => 80.00
+    )
+4) con "$resultado->free();" libera la memoria (?)
+5) finalmente, consultarSQL() retorna un array de objetos, que representa una coleccion de registros, respuesta a una consulta SQL. 
+
+----- 
+
+VIDEO 537 
+
+*** scope de una variable en PHP 
+*** ejemplo didactico vvv 
+
+$clave = 147;
+for($i = 0; $i < 11; $i++){
+    echo $clave . "<hr>";
+    if($clave === 154) {
+        $peter = "capusoto";
+    }
+    $clave++;
+}
+echo $peter;
+exit;
+
+----- 
+
+VIDEO 538 
+
+*** date_default_timezone_set() -> funcion PHP para determinar la zona horaria correcta en el servidor vvv 
+*** la use en AdminController::index() para enviarle a la vista la fecha real en Buenos Aires, Argentina:
+
+date_default_timezone_set('America/Buenos_Aires');
+$fecha = date("Y-m-d H:i:s");
+
+----- 
+
+VIDEO 539 
+
+*** modificaciones en el css para que la imagen de la izquierda se comporte adecuadamente independientemente de la cantidad de contenido renderizada en el lado derecho
+*** habia un problema con el tamaño de la imagen: a mayor cantidad de contenido del lado derecho, mayor tamaño tomaba la imagen, y no quedaba bien esteticamente.
+
+/src/scss/base/_globales.scss
+body {
+    @include m.tablet {
+        height: 100%;
+    };
+}
+
+/src/scss/layout/_UI.scss
+.contenedor-app {
+  .app {
+    @include m.tablet {
+        overflow: scroll;
+    };
+  }
+}
+
+----- 
+
+VIDEO 541
+
+*** checkdate(mes, dia, fecha) -> funcion PHP para comprbar si una fecha es valida
+      -> devuelve un boolean 
+      -> soporta strings e integers
+*** valida fechas entre el 0001-01-01 hasta el 32767-12-31
+*** contempla los 29/2 de los años bisiestos
+*** ejemplo -> checkdate(12, 31, 32767)
+
+----- 
+
+*** El Lunes 19/6, y antes de seguir con el VIDEO 542, configuré en el servidor (XAMPP) la zona horaria, que estaba seteada como 'Europe/Berlin'
+1) Para esto, fuí al archivo /xampp/php/php.ini 
+2) En el archivo, busqué la linea que setea la zona horaria del servidor vvv 
+   date.timezone=Europe/Berlin
+3) comente esa linea, y debajo defini el nuevo seteo vvv
+   ; date.timezone=Europe/Berlin
+   date.timezone=America/Buenos_Aires
+4) reinicie el servidor (XAMPP) y funciono correctamente.
+
+*** PHP proporciona 2 funciones para obtener la zona horaria del servidor donde corre la aplicacion, y setear la zona horaria para un script determinado vvv 
+    date_default_timezone_get() -> obtener zona horaria del servidor donde corre la app
+    date_default_timezone_set($zonaHoraria) -> setear la zona horaria para un script determinado, con la $zonaHoraria que le pasemos como argumento
+
+    ejemplo:
+      echo date_default_timezone_get() . "<br>"; // "America/Buenos_Aires"
+      date_default_timezone_set('Europe/Berlin'); 
+      echo date_default_timezone_get() . "<br>"; // "Europe/Berlin"
+
+*** echo date("Y-m-d H:i:s") // "2023-06-19 12:55:14" -> DATETIME del servidor 
+*** echo date("d-m", strtotime("2021-05-14")) // "14-5"
+
+-----
+  
+VIDEO 542
+
+* creamos el endpoint de nuestra API de citas, para que el administrador pueda eliminar una cita
+  $router->post("/api/eliminar", [APIController::class, "eliminar"]);
+*** en una API, el verbo tendria que ser DELETE, pero http por si solo, solo soporta GET y POST, asi que usamos POST (PUT, PATCH, DELETE, etc, si son soportados por la mayoria de los frameworks)
+
+* $_SERVER["HTTP_REFERER"] 
+  -> este atributo del array superglobal $_SERVER proporciona la url desde donde esta llegando el usuario 
+  -> aparentemente, y por las pruebas que hice, este atributo solo existe cuando se llega por via POST desde una ubicacion anterior 
+  -> ejemplo: funcionó cuando intente crear una nueva cita desde el usuario de un cliente (usando fetch de JS - app.js -); desde ApiController::guardar() retorne $_SERVER en formato json, y desde JS lo pude capturar sin problemas (acusaba que la peticion venia desde http://localhost:3000/cita ) 
+* en este VIDEO, lo usamos en ApiController::eliminar() para redireccionar al administrador a la misma pagina donde se encontraba al momento del click en eliminar una cita (por ejemplo, para redireccionarlo http://localhost:3000/admin?fecha=2023-06-21 luegop de eliminar una cita del 21/6/23)
+
+----- 
+
+* en este video, el profesor no considera la posibilidad de que si elimino una cita, se eliminen los registros de citasservicios asociados 
+* tambien comprobé que pasa lo mismo si elimino un usuario (no se eliminan las citas asociadas a ese usuario, y por ende, los registros en citasservicios asociados a esa/s cita/s eliminadas) 
+* tambien comprobé que pasa lo mismo si elimino un servicio (no se eliminan las citasservicios asociados a ese servicio) 
+* lo investigue y lo hice yo vvv
+
+SHOW CREATE TABLE $nombreTabla;
+1) este comando SQL nos permite ver la configuracion de una tabla existente en nuestra DB (de esta forma, me aseguro si hace falta modificar algo, antes de hacerlo) 
+
+   SHOW CREATE TABLE citas;
+   CREATE TABLE `citas` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `fecha` date DEFAULT NULL,
+      `hora` time DEFAULT NULL,
+      `usuarioId` int(11) DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `usuarioId` (`usuarioId`),
+      CONSTRAINT `citas_ibfk_1` FOREIGN KEY (`usuarioId`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL ON UPDATE SET NULL
+   ) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8
+
+   ** esto significa (hice pruebas y pasa) que si borro un usuario, las citas asociadas quedaran con usuarioId = (NULL)
+
+2) modifico citas, para que a partir de ahora, cuando elimino un usuario, se elimine tambien la cita vvv
+   
+   2.1) primero, elimino la restricción de clave externa existente "citas_ibfk_1"
+    ALTER TABLE citas
+    DROP FOREIGN KEY citas_ibfk_1;
+
+   2.2) compruebo que se elimino correctamente la restriccion vvv 
+    SHOW CREATE TABLE citas; 
+    CREATE TABLE `citas` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `fecha` date DEFAULT NULL,
+      `hora` time DEFAULT NULL,
+      `usuarioId` int(11) DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `usuarioId` (`usuarioId`)
+    ) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8
+
+   2.3) luego, la vuelvo a crear, pero con la nueva funcionalidad 
+    ALTER TABLE citas
+    ADD CONSTRAINT citas_ibfk_1 FOREIGN KEY (usuarioId) REFERENCES usuarios (id) ON DELETE CASCADE;
+
+   2.4) compruebo que se creo correctamente la nueva restriccion vvv   
+    CREATE TABLE `citas` (
+      `id` int(11) NOT NULL AUTO_INCREMENT,
+      `fecha` date DEFAULT NULL,
+      `hora` time DEFAULT NULL,
+      `usuarioId` int(11) DEFAULT NULL,
+      PRIMARY KEY (`id`),
+      KEY `citas_ibfk_1` (`usuarioId`),
+      CONSTRAINT `citas_ibfk_1` FOREIGN KEY (`usuarioId`) REFERENCES `usuarios` (`id`) ON DELETE CASCADE
+    ) ENGINE=InnoDB AUTO_INCREMENT=121 DEFAULT CHARSET=utf8
+
+   2.5) Hago pruebas y ahora si, cuando elimino un usuario se eliminan las citas asociadas
+
+3) modifico citasservicios, para que a partir de ahora, cuando elimino una cita (o un usuario desde la BD), se elimine tambien las citasservicios asociados a esa cita (o usuario)
+  3.1) SHOW CREATE TABLE citasservicios; (para comprobar que realmente hace falta la modificacion)
+  3.2) Si hace falta vvv
+  ALTER TABLE citasservicios
+  DROP FOREIGN KEY citasservicios_ibfk_1;
+  3.3)
+  ALTER TABLE citasservicios
+  ADD CONSTRAINT citasservicios_ibfk_1 FOREIGN KEY (citaId) REFERENCES citas (id) ON DELETE CASCADE;
+
+4) quedaria pendiente revisar que conviene cuando se elimina un servicio (por ahora no lo modifico):
+   * con la confuguracion actual, si se elimina un servicio, la citaservicio asociada a ese servicio queda en (NULL)
+   * el problema es que hay, al menos, 2 escenarios posibles:
+   ** si el turno fue pedido con solo el servicio posteriormente eliminado, habria que elimianr la cita y la citaservicio asociada a ese servicio eliminado
+   ** si el turno fue pedido con varios servicios (entre ellos, el posteriormente eliminado) entonces solo habria que eliminar la citaservicio asociado al servicio eliminado, pero no la cita (ya que es válida para que el cliente realize los otros servicios vigentes) 
+
+5) Para estas modificaciones en la DB, por seguridad, es bueno tener una copia de seguridad de la base en su estado previo a la modificación, antes de modificar nada.
+   Entonces, aca va a un paso a paso de como exportar una base con Heidi como paso previo, para tener la copia de seguridad mencionada:
+   1) En Heidi 
+   2) click derecho sobre la base a exportar (panel izquierdo)
+    2.1) se va a abrir un nuevo panel
+   3) en el nuevo panel, en la parte de arriba, puedo seleccionar si quiero exportar la estructura de la base con varias opciones para los datos (select "Datos")
+   4) click en el icono de la carpeta (al final del select "Nombre del archivo") para setear el nombre del archivo .sql que voy a crear, y la ubicacion en mi maquina donde quiero ubicarlo
+   5) click en "Exportar"
+   6) hice una prueba, y exporte el archivo "appsalon.sql" a mi escritorio; la exportacion se genero correctamente (en apariencia, ya que abri el archivo en VSC y se ve toda la sintaxis SQL que crea las tablas, los registros, etc.)
+   7) quedaría pendiente la prueba de importar esa base nuevamente en mi conexion local en Heidi y ver que se importe correctamente.
+
+----- 
+
+*** Hay una pregunta de un alumno muy interesante en este video (en Udemy)
+    "Exportar las citas a un fichero excel, tanto desde PHP como desde JS" 
+*** Hay respuestas a tener en cuenta para las 2 opciones, por uno de los profesores asistentes 
+*** palabras clave: exportar datos db bd base de datos a archivo excel
+
+----- 
+
+VIDEO 548 
+
+is_numeric($variable) -> determina si el parametro recibido es o no un numero (soporta numeros en formato string, y toma como validos numeros decimales - con punto -)
+* lo uso para la validacion del formulario de creacion y actualizacion de servicios, dentro del panel del administrador
+
+* Alteré el tipo de dato que soporta el campo precio de la tabla servicios, para no tener problema con los precios de los servicios vvv 
+
+ALTER TABLE servicios MODIFY COLUMN precio INT(11);
+
+*** le agregué sweetalert por mi cuenta para que le salga un cartel al administrador luego de crear un nuevo servicio, y el redireccionamiento a /servicios lo hago desde JS, en vez de hacerlo desde PHP como muestra el profesor en este video
+
+-----
+
+VIDEO 549 
+
+.servicios {
+    @extend .citas;
+}
+
+* @extend -> directiva de SASS 
+* ver /src/scss/layout/_admin.scss para ver la explicacion
+* tambien se puede repasar este video (VIDEO 549)
+
+----- 
+
+VIDEO 551 
+
+* una buena forma de redireccionar al usuario si lo que llega por GET no es lo esperado
+* en este caso, esperamos recibir un id valido de servicio para actualizarlo (es decir, un numero entero positivo mayor a cero)
+if (!isset($_GET["id"]) || !(is_numeric($_GET["id"]) && intval($_GET["id"]) == $_GET["id"]) || $_GET["id"] <= 0 ) {
+  header("Location: /servicios");
+}
+
+----- 
+
+VIDEO 553 
+
+* en este video, muestra como eliminar servicios desde el panel del administrador
+
+* modifique la tabla citasservicios, para que, si se elimina un servicio, se eliminen tambien los citasservicios asociados a ese servicio vvv  
+
+ALTER TABLE citasservicios
+DROP FOREIGN KEY citasservicios_ibfk_2;
+
+ALTER TABLE citasservicios
+ADD CONSTRAINT citasservicios_ibfk_2 FOREIGN KEY (servicioId) REFERENCES servicios (id) ON DELETE CASCADE;
+
+
+* ademas, agregue la funcionalidad de que, si el administrador elimina un servicio desde el panel, y habia algun turno reservado previamente, solo con ese servicio, se elimine tambien la cita correspondiente en citas
+  esto lo hice desde ServicioCOntroller::eliminar(), el metodo que programamos en este video para eliminar un servicio de servicios
+  esto lo hice con un bloque de codigo adicional, que incluye una consulta SQL de las citas que no tengan registros asociados en citasservicios, una iteracion del resultado de esa consulta, y una eliminacion 1 por 1 de esos registros de citas (si los hubo) (ver ServicioCOntroller::eliminar())
+  
+  *** me ayude con chatGTP, empezando por mandarle este prompt vvv
+  "Traducime esta frase al ingles porfa:
+  'sos un experto en mysql. te voy a hacer preguntas. se lo mas claro y eficiente posible. Te voy a preguntar en español, contestame en español, de acuerdo?'"
+
+  *** respuesta de chatGTP vvv
+  You are an expert in MySQL. I'm going to ask you questions. Be as clear and efficient as possible. I will ask you in Spanish, so please answer me in Spanish, okay?
+
+  *** luego, le pedí una consulta para lo que necesitaba vvv
+  "tengo la tabla "paises" con los campos "id" y "nombre"
+  tengo la tabla "clientes" con los campos "id", "nombre"y "paisId" ("paisId es FK y hace referencia al campo "id" de "paises")
+  quiero un listado de todos los paises que no tienen clientes.
+  Cual es la consulta SQL mas eficiente para lograr este listado?"
+
+  *** me devolvio esta consulta 
+  "SELECT paises.id, paises.nombre
+   FROM paises
+   LEFT JOIN clientes ON paises.id = clientes.paisId
+   WHERE clientes.paisId IS NULL;"
+
+  *** finalmente la adapté a mis necesidades en ServicioCOntroller::eliminar()
+
+----- 
+
+VIDEO 556 
+
+Variables superglobales de PHP:
+$_GET
+$_POST
+$_SERVER
+$_SESSION
+$_COOKIE
+$_ENV (para las variables de entorno)
+
+
+1) instalo una dependencia para leer valores de variables de entorno vvv
+composer require vlucas/phpdotenv
+
+  *** se creó la dependencia en composer.json
+      "vlucas/phpdotenv": "^5.5"
+  *** se creó /vlucas/phpdotenv en /vendor
+
+2) creo archivo con las variables de entorno de mi proyecto vvv 
+/includes/.env 
+   seteo las variables de entorno para la conexion a la DB (ver .env)
+
+3) en /includes/app.php instancio la dependencia instalada de vlucas\phpdotenv y algunas configuraciones mas, para poder leer las variables de entorno en el .env y que se agreguen a la variable superglobal de PHP $_ENV
+
+4) en /includes/database.php paso las variables de entorno definidas en .env a la conexion a la base de datos, a traves de la variable superglobal $_ENV (que ya tiene cargadas esas variables definidas en .env)
+
+5) todo funciona correctamente
+
+*** en conclusion (y comprobado), todas las constantes que vaya agregando al .env se van a ir cargando en el superglobal $_ENV
+
+----- 
+
+VIDEO 557
+
+1) en la raiz, creo el archivo Procfile
+  este archivo sirve para indicar que nuestro proyecto debe ejecutarse desde una ubicacion que no sea la raiz del proyecto (en nuestro caso, la app se ejecuta desde /public, entonces necesitamos el Procfile)
+   lo seteo (ver Procfile)
+
+2) Modificar el Router
+  // $currentUrl = $_SERVER['PATH_INFO'] ?? '/'; 
+  $currentUrl = $_SERVER['REQUEST_URI'] === "" ? "/" : $_SERVER['REQUEST_URI'];
+
+  *** en conclusion, reescribimos la variable $currentIrl (ver explicacion en el video, pero dice que "en apache no existe $_SERVER['PATH_INFO'], si existe $_SERVER['REQUEST_URI']")
+
+3) creamos el archivo /public/.htacces 
+  * ".htacces es un archivo de configuracion de apache que le va a decir como se tiene que comportar en esos cambios de las URLs"
+
+  lo seteamos con un script que pasó en un gist vvv 
+  gist -> https://gist.github.com/codigoconjuan/1fe819b8774894c1ac9ae8d3cc35f0c5 vvv
+
+  Options -MultiViews
+  RewriteEngine On
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteRule ^ index.php [QSA,L]
+
+----- 
+
+VIDEO 558
+
+* comando de git que abre en el navegador el git-branch(1) Manual Page (que me parece que esta dentro de C://Program Files/Git)
+git branch --help
+
+* tambien funciona con git status --help o git checkout --help
+
+*** en cocnclusion, la instalacion de GIT en mi maquina trae un manual, y de esta manera puedo acceder a los diferentes apartados
+
+*** https://www.atlassian.com/es/git // manual GIT en español 
+
+----- 
+
+* aparentementemente Heroku ya no es gratis
+
+* En el video 560 un alumno preguntó vvv 
+"En estos momentos hay que pagar en heroku para subir un proyecto
+y el que esta gratuito es RailWay, como podria subirlo para que funcione el proyecto, que linea de codigo tengo que poner. ya que aqui creamos un archivo llamado "Procfile" y le agregamos esta linea de codigo para que inicie el proyecto. pero en RailWay no sirve esta linea de codigo. me podrian ayudar por favor. gracias."
+
+* un asistente le respondió vvv 
+"Hola Carlos
+La sección para el deployment se estará actualizando en los próximos días.
+En mi blog tengo un par de guías que te pueden ayudar a realizar el deployment en hostings gratuitos ya que actualmente railway no soporta Apache, por lo que tampoco la configuración vista acá es funcional para ese servicio.
+https://blogjc.vercel.app/
+Tienes las guías tanto para alwaysdata como para 000webhost, en los próximos días el profe juan estaría haciendo un vídeo sobre el deploy en alwaysdata similar a como lo muestro en la guía, pero ya en vídeo."
+
+https://blogjc.vercel.app/ -> blog de un asistente de Valdez
+
+post -> https://blogjc.vercel.app/post/alwaysdatamvc

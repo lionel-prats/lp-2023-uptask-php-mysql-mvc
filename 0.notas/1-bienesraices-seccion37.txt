@@ -1,0 +1,67 @@
+"npm run dev" o "npx gulp" para activar gulp 
+
+-----
+
+VIDEO 361
+composer init para crear y configurar el composer.json 
+composer update crea la carpeta vendor, que incluye el archivo autoload.php (nos sirve para importar clases, en nuestro caso desde la carpeta /classes - asi lo especificamos en composer.json -)
+
+-----
+
+VIDEO 369
+Instalacion y uso de la libreria Intervetion Image para subir imagenes al servidor
+composer require intervention/image 
+
+la libreria es una clases
+
+-----
+
+VIDEO 370
+
+property_exists($objeto, $key)
+
+* funcion PHP para saber si una llave existe dentro de un objeto
+
+-----
+
+VIDEO 372
+
+funcion PHP htmlspecialchars();
+
+ejemplo para entender:
+
+* al principio del codigo (crear.php) tire este echo vvv
+
+echo "<script>alert('hola')</script>";
+exit;
+** esto me genera un alert (js) ya que escribe codigo js en el documento HTML
+
+* si luego, tiro este eho vvv 
+
+echo htmlspecialchars("<script>alert('hola')</script>"); ;
+exit;
+** con esta funcion "anulo" el comportamiento js y simplemente se imprime por pantalla <script>alert('hola')</script> 
+
+*** usamos esta funcion para sanitizar datos de entrada en el formulario de crear propiedad
+*** para esto, creamos la funcion s() en funciones.php
+
+-----
+
+VIDEO 373
+
+array_shift();
+
+* funcion PHP que retorna el primer elemento de un array.
+
+-----
+
+VIDEO 375
+
+strpos("monitos.jpg", ".") -> retorna la posicion del caracter pasado como 2do. argumento (en este caso 7)
+substr("monitos.jpg", 8) -> retorna un substring empezando por la posicion pasada como 2do argumento (en este caso "jpg");
+
+-----
+
+VIDEO 376
+
+file_exists(CARPETA_IMAGENES . $oldImage) -> funcion para averiguar si un archivo existe dentro del proyecto

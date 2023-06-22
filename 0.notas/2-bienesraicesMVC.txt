@@ -1,0 +1,771 @@
+"npm run dev" o "npx gulp" para activar gulp 
+
+-----
+
+VIDEO 361
+composer init para crear y configurar el composer.json 
+composer update crea la carpeta vendor, que incluye el archivo autoload.php (nos sirve para importar clases, en nuestro caso desde la carpeta /classes - asi lo especificamos en composer.json -)
+
+-----
+
+VIDEO 369
+Instalacion y uso de la libreria Intervetion Image para subir imagenes al servidor
+composer require intervention/image 
+
+la libreria es una clases
+
+-----
+
+VIDEO 370
+
+property_exists($objeto, $key)
+
+* funcion PHP para saber si una llave existe dentro de un objeto
+
+-----
+
+VIDEO 372
+
+funciones.php -> s();
+
+funcion PHP htmlspecialchars();
+
+ejemplo para entender:
+
+* al principio del codigo (crear.php) tire este echo vvv
+
+echo "<script>alert('hola')</script>";
+exit;
+** esto me genera un alert (js) ya que escribe codigo js en el documento HTML
+
+* si luego, tiro este eho vvv 
+
+echo htmlspecialchars("<script>alert('hola')</script>"); ;
+exit;
+** con esta funcion "anulo" el comportamiento js y simplemente se imprime por pantalla <script>alert('hola')</script> 
+
+*** usamos esta funcion para sanitizar datos de entrada en el formulario de crear propiedad
+*** para esto, creamos la funcion s() en funciones.php
+
+-----
+
+VIDEO 373
+
+array_shift();
+
+* funcion PHP que retorna el primer elemento de un array.
+
+-----
+
+VIDEO 375
+
+strpos("monitos.jpg", ".") -> retorna la posicion del caracter pasado como 2do. argumento (en este caso 7)
+substr("monitos.jpg", 8) -> retorna un substring empezando por la posicion pasada como 2do argumento (en este caso "jpg");
+
+-----
+
+VIDEO 376
+
+file_exists(CARPETA_IMAGENES . $oldImage) -> funcion para averiguar si un archivo existe dentro del proyecto
+
+-----
+
+VIDEO 381 
+
+en la clase ActiveRecord vvv 
+
+protected static tabla = "";
+
+con "protected" este atributo solo puede ser accedido desde la propia clase, no puede modificarse desde los objetos  
+
+MODIFICADOR DE ACCESO static vvv
+
+static::$tabla
+
+lo usamos en la clase ActiveRecord para referenciar al atributo estatico $tabla, reescrito en las Clases Propiedad y Vendedor
+
+-----
+
+VIDEO 382 
+
+En la clase ActiveRecord, metodo crearObjeto() vvv
+
+$objeto = new static;
+
+con "new static" voy a crear una instancia de la la clase desde donde se invoque a este metodo crearObjeto()
+
+-----
+
+VIDEO 384
+
+*** (auto)explicacion de los modificadores de acceso
+*** en ActiveRecord vvv
+
+public $errores = []; -> podria accederlo desde una instancia de la clase (un objeto)
+protected static $errores = []; -> podria accederlo desde una clase hija que herede una clase padre
+private static $errores = []; -> solo puedo accederlo desde la clase donde existe el atributo
+
+*** VERIFICAR
+
+-----
+
+VIDEO 387
+
+in_array($valor_a_buscar, $array) : bool;
+
+funcion que busca un valor en un array, retornando un booleano
+
+-----
+
+*** En este videos surge un problema: me tira error si quiero eliminar un vendedor con alguna propiedad asociada (propiedades.vendedores_id = vendedor.id).
+*** Entre las consultas de la clase se encuentra esta respuesta a ese problema vvv 
+
+PREGUNTA -> hola no puedo elimiar vendedores no entiendo la razon
+
+RESPUESTA
+Hola Ángel.
+En MySQL existe algo llamado integridad referencial significa que cuando un registro en una tabla haga referencia a un registro en otra tabla, el registro correspondiente debe existir. Por lo que no puedes eliminar un registro si otro registro depende del que estas intentando eliminar.
+Esto lo veremos mas adelante en el curso.
+Lo que tienes que hacer es modificar tus foreign keys, desde Tableplus, das clic derecho sobre la tabla propiedades y seleccionas Open structure.
+Seleccionas el fk de vendedores dando clic en la flecha que aparece hacia la derecha ->
+Seleccionas nuevamente vendedores y modificas la opción SET NULL tanto de On Update como On Delete, esto te permitirá borrar un vendedor, conservando los registros de las propiedades, automáticamente el campo vendedor pasara a null en las propiedades donde existía el vendedor que hayas borrado.
+
+----- 
+
+El VIDEO 460 explica el tema de las Restricciones de Integridad Referencial
+
+Corri este codigo SQL para cambiarle los valores a los CONSTRAINTS (?) ON DELETE y ON UPDATE y solucione el problema!! (11/4/23) vvv
+
+ALTER TABLE `bienesraices_crud`.`propiedades`
+DROP FOREIGN KEY `vendedores_id`;
+ALTER TABLE `bienesraices_crud`.`propiedades` 
+ADD CONSTRAINT `vendedores_id`
+FOREIGN KEY (`vendedores_id`)
+REFERENCES `bienesraices_crud`.`vendedores` (`id`)
+ON DELETE SET NULL
+ON UPDATE SET NULL;
+
+-----
+
+*** en /admin/index.php, al momento de eliminar una propiedad o un vendedor, el "alert" de exito en todos los casos dice "Propiedad Eliminada Correctamente"
+*** esto es porque desde el metodo eliminar() en ActiveRecord redirigimos al mismo archivo luego del DELETE pasandole como queryString "/?result=3" en la URL y en el HTML del archivo está seteado para mostrar la leyenda mencionada en caso de result=3
+*** "lo solucionaremos mas adelante"
+
+-----
+
+VIDEO 388
+
+*** AFIANZANDO LO APRENDIDO 
+* creo el archivo /admin/vendedores/crear.php 
+* hago un use de Vendedor -> use App\Vendedor;
+* instancio Vendedor -> $vendedor = new Vendedor();
+* Esto solo funciona si dispongo del archivo /vendor/autoload.php en este archivo
+* Para disponer de dicho archivo alcanza con hacer un require de /includes/app.php, ya que este archivo incluye un require del archivo /vendor/autoload.php
+
+*** intval("155a1556") retorna el valor integer de una variable
+* en este ejemplo, retorna int(155)
+
+*** is_numeric("155a1556") retorna true si el valor es numerico, false si no lo es
+* en este ejemplo, retorna bool(false)
+
+*** strlen(1551556) retorna un integer con la cantidad de caracteres o dígitos del valor pasado como parametro
+* en este ejemplo, retorna int(7)
+
+-----
+
+VIDEO 389
+
+"la mejor forma de validar que el usuario este ingresando solo numeros desde un form es usando expresiones regulares"
+
+preg_match($expresion_regular, $string) -> funcion nativa de PHP para usar expresiones regulares buscando patrones en strings
+
+* estamos en el formulario de registro de un vendedor
+* vamos a usar expresiones regulares para validar que el nro de telefono ingresado por el usuario sea un numero valido (sin caracteres alfanumericos)
+* en PHP, para trabajar con expresiones regulares usamos la funcion nativa preg_match()
+* esta validacion la haremos en el metodo validar() de Vendedor
+
+EXPRESION REGULAR 
+
+"una expresion regular es una forma de buscar un patron dentro de un texto"
+
+-----
+
+preg_match('/[0-9]{10}/', $this->telefono)
+* con [0-9] seteo que solo se acepten como validos los caracteres 0,1,2,3,4,5,6,7,8 & 9 
+* con {10} seteo que espero 10 caracteres
+*** en mi caso esto no funciono exactamente como deberia, asi que me puse con el tutorial de coders free sobre expresiones regulares vvv
+https://www.youtube.com/watch?v=xGaXH7spCyA&t=750s
+
+-----
+
+VIDEO 390
+
+filter_var($variable, FILTER_VALIDATE_INT)
+* la funcion filter_var() permite hacer validaciones de los tipos de datos que contiene una variable.
+* en este caso, con la constante FILTER_VALIDATE_INT validamos si la variable es u integer
+* hasta aca la usamos para validar que los id de inmueble o vendedor que vienen por GET sean valores numericos (o sea, para sanitizar el dato (?)) 
+* esto lo hacemos en los archivos actualizar.php correspondiente a cada tabla
+
+-----
+
+VIDEO 392
+
+* convertimos el archivo /includes/templates/anuncios.php a la forma orientada a objetos
+* borramos el cierre de la conexion a la BD, que teniamos de la forma anterior (funcional (?)) vvv
+
+<?php 
+    mysqli_close($db);
+?>
+
+* el profesor explica que el metodo free() definido en el metodo consultarSQL() de la clase ActiveRecord ($resultado->free()) es la forma orientada a objetos de liberar la memoria
+
+* tambien convertimos anuncio.php a la forma orientada a objetos
+
+-----
+
+VIDEO 393 
+
+usamos el arreglo global $_SERVER
+
+$_SERVER["REQUEST_URI"] => string(26) "/bienesraices/index.php"
+
+$_SERVER["SCRIPT_NAME"] => string(26) "/bienesraices/anuncios.php"
+
+* de esta forma podemos saber que archivo.php del proyecto se esta mandando a llamar o ejecutando
+
+* de esta manera, en /includes/templates/anuncios.php mandamos a llamar al metodo estatico all() de ActiveRecord para traer todas las propiedades (cuando se ejecute anuncios.php) o al metodo estatico get() de ActiveRecord para traer una cantidad determinada de propiedades, cuando se ejecute el index.php del proyecto
+
+--------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------
+
+VIDEO 395 (en este video empezamos a pasar el proyecto al patron de diseño MVC - tambien llamado patron de arquitectura de software -)
+
+* Creamos el proyecto bienesraicesMVC 
+
+* Creo la carpeta /public
+    "todo lo que este en public es a lo que los usuarios pueden acceder"
+
+php -S locahost:3000 -> para levantar un servidor local (servidor de desarrollo)
+
+* copie composer.json
+* copie composer.lock
+
+* en la consola -> composer install -> se crea la carpeta /vendor
+"composer es como el package.json de Node, es muy similar, se inspiraron en el"
+
+* copie /classes y la renombre /models
+
+* copie gulpfile.js
+* copie package.json
+* copie package-lock.json
+
+* en la consola -> npm i -> se crea la carpeta /node_modules, con, entre otras, todas las dependencias en el package.json y que usamos en gulpile.js
+
+* en gulpfile.js modifico las rutas del metodo dest(), que lo usamos en varias funciones para ubicar en la carpeta /build todo el .css, el .js y las imagenes de los inmuebles vvv
+
+ruta anterior -> dest('./build/js')
+ruta editada -> dest('./public/build/js')
+*** este ejemplo es de javascript(). Esto mismo lo replicamos en las funciones
+- css()
+- javascript()
+- imagenes()
+- versionWebp()
+
+* corri npm run dev en la consola y se creo correctamente la carpeta /public/build con las subcarpetas /css, /img y /js
+
+* copie /src
+
+* copie /includes
+
+* Creo la carpeta /controllers
+
+* Creo la carpeta /views
+
+* Creé el repo vvv ...
+
+https://github.com/lionel-prats/lp-2023-php-bienesraicesMVC
+
+... y realizé el primer commit
+
+-----
+
+VIDEO 396
+
+* /public/index.php sera el archivo principal del proyecto y mandara a llamar a los archivos internos de nuestro MVC 
+*** aparentemente va a ser el "route" del proyecto...
+
+REPASO DE LO APRENDIDO
+
+* quise repasar el tema del autoload.
+* para esto repase los videos 354, 355, 356 y 358
+* creé el archivo /public/prueba.autoload.video.396.php para refrescar el autoload de clases
+* ruta de acceso a este archivo desde el navegador vvv
+    http://localhost:3000/prueba.autoload.video.396.php
+
+* tambien creé la clase /models/Prueba.php 
+
+* desde /public/prueba.autoload.video.396.php implemento el autoload que el profesor explica en los videos 354 y 355 (seccion 32)
+* importo las clases ActiveRecord y Prueba y todo funciona correctamente
+
+-----
+
+* desde el video 358, el profesor dice que esto es una forma "artesanal" de hacer el autoload de clases
+
+* el profesor explica que el autoload de clases podemos hacerlo con composer, que sera una opcion mas eficiente que la anterior
+
+* composer -> es una herramienta que nos va a permitir instalar y administrar dependencias en PHP
+
+* consola -> composer init -> para crear el composer.json
+    (repasar el video 358 para ver como se setea por 1era vez este archivo al momento de ser creado)
+
+* luego explica que añadiendo este script al composer.json podemos usar el autoload de clases de composer vvv 
+
+"autoload": {
+    "psr-4": {
+        "App\\": "./classes" 
+    }
+}
+
+* en este script especificamos que el namespace de la carpeta que contendra nuestros modelos es "App\" y que la carpeta se llama "classes"
+
+* luego corre el comando composer update (esto crea la carpeta vendor y el composer.lock)
+
+* entonces el archivo /vendor/autoload.php (hay que requerirlo en los archivos en que querramos usarlo) reemplaza al script "artesanal" anterior pora lo que es el autoload de clases
+
+* cambie los namespaces de las clases por Model 
+
+* edite "autoload" en composer.json vvv
+
+"autoload": {
+    "psr-4": {
+        "Model\\": "./models"
+    }
+}
+
+* corri "composer update" por consola para actualizar /vendor (?), ya que reescribimos el composer.json 
+*** explicacion profesor asistente (VIDEO 396)
+    "Lo que hace (composer update) es actualizar estos cambios también en tu composer-lock.json ya que muchas veces sueles tener un problema de funcionamiento ya que el composer.json y composer-lock.json no están sincronizados."
+
+* la carga de clases (modelos) en http://localhost:3000/prueba.autoload.video.396.php funciona correctamente 
+
+-----
+
+VOLVIENDO AL VIDEO 396 
+
+* en composer.json modifica "autoload"
+* cambia el namespace de las clases (modelos) a "Model" y especifica que todos los modelos estan dentro de /models vvv
+"autoload": {
+    "psr-4": {
+        "Model\\": "./models"
+    }
+}
+
+* consola -> composer update para acrualizar /vendor (?), ya que reescribimos el composer.json 
+
+-----
+
+* 3'30" -> /public/index.php va a mandar a llamar internamente todo el codigo que tenemos en /controllers, /models y /views
+* para esto tenemos que crear un archivo llamado "router"
+* en "router" vamos a registrar todas las URL que soporta nuestro proyecto y que controladores y metodos se ejecutaran segun cada URL
+
+----- 
+
+VIDEO 397 
+
+* en la raiz creamos Router.php (va a ser una clase)
+
+* en composer.json vvv 
+
+"autoload": {
+    "psr-4": {
+        "Model\\": "./models",              -> namespace de los archivos de /models
+        "MVC\\": "./",                      -> namespace de los archivos de /
+        "Controllers\\": "./controllers"    -> namespace de los archivos de /controllers
+    }
+}
+
+"Model", "MVC" & "Controllers" -> namespaces 
+
+"./models", "./", "./controllers" -> ubicaciones relativas de los namespaces dentro del proyecto 
+
+*** como edite el composer.json, a continuacion debo correr el comando "composer update" para que (en este caso) "autoload" funcione correctamente
+
+* namespace MVC; -> asi le damos un namespace a una clase (ejemplo class Router en /Router.php)
+
+* use MVC\Router; -> asi invocamos una clase usando su namespace (ejemplo de invocacion de class Router en /Router.php, en /public/index.php)
+*** para hacer uso de una clase, en todos los casos, debemos hacer un require (en el caso de /public/index.php hay un require a app.php, que a su vez tiene un require a /vendor/autoload.php)
+
+*** recordemos que la instancia de una clase es un objeto vvv
+*** ejemplo -> instancia de la clase Router vvv
+
+object(MVC\Router)#2 (0) {
+}
+
+-----
+
+VIDEO 398
+
+trabajamos en /Router.php vvv 
+
+* cuando por GET se requiera una ruta distinta de "/" (por ejemplo "http://localhost:3000/propiedades/crear"), el arreglo global $_SERVER contendra el atributo ["PATH_INFO"] con ese "string" adicional vvv 
+ 
+$_SERVER["PATH_INFO"] = /propiedades/crear
+
+* si el require por URL es a "/" $_SERVER["PATH_INFO"] no existira
+
+* $_SERVER["REQUEST_METHOD"] -> nos indica si la peticion es GET o POST
+
+* $router->get("string", "string") 
+* ejecutamos el metodo get(), que va agregando atributos al atributo publico $rutasGET (array asociativo) del objeto en memoria (instancia de Router)
+
+* call_user_func($funcion, 2do parametro) -> es una funcion que nos va a permitir llamar (ejecutar) a una funcion cuando no sabemos como se llama esa funcion
+* el primer argumento que le pasamos debe ser una funcion 
+
+-----
+
+VIDEO 399 
+
+* creo el controlador (archivo) /controllers/PropiedadController.php (va a contener la clase Propiedad)
+
+* 05' aprox -> en /public/index.php vvv 
+    use Controllers/PropiedadController;
+    debuguear(PropiedadController::class); vvv
+    string(31) "Controllers\PropiedadController" 
+    *** PropiedadController::class es una forma de obtener en forma de string el use de de la clase Controllers/PropiedadController (el namespace) en forma de string, es decir -> "Controllers\PropiedadController"
+    *** lo usamos con el $route->get(...), pasandolo como 1er elemento del arreglo que pasamos como segundo argumento al metodo
+    
+* debuguear($router->rutasGET) vvv
+
+array(3) {
+  ["/admin"]=>
+  array(2) {
+    [0]=>
+    string(31) "Controllers\PropiedadController"
+    [1]=>
+    string(5) "index"
+  }
+  ["/propiedades/crear"]=>
+  array(2) {
+    [0]=>
+    string(31) "Controllers\PropiedadController"
+    [1]=>
+    string(6) "create"
+  }
+  ["/propiedades/actualizar"]=>
+  array(2) {
+    [0]=>
+    string(38) "Controllers\PropiedadController::class"
+    [1]=>
+    string(6) "update"
+  }
+}
+
+-----
+
+* entendiendo la funcion call_user_func() vvv
+
+class Persona {
+    public static function saludar() {
+        echo "entendiendo la funcion call_user_func()";
+        exit;
+    }
+}
+call_user_func(["Persona", "saludar"]);
+*** hasta aca, compruebo que es una forma de ejecutar el metodo estatico de una clase
+*** en la practica, el resultado es el mismo que hacer Persona::saludar();
+
+-----
+
+VIDEO 401
+
+metodo render() de Router vvv 
+
+ob_start() 
+include __DIR__ . "/views/$view.php";
+* "esta funcion va a iniciar un almacenamiento en memoria"
+
+-----
+
+VIDEO 406 
+
+en PropiedadController->crear() vvv
+
+busque como obtener la extension de un archivo enviado desde un form con la idea de validarla vvv 
+
+if($_FILES["propiedad"]["tmp_name"]["imagen"]) {
+    $filename = $_FILES["propiedad"]["name"]["imagen"];
+    $extension = pathinfo($filename, PATHINFO_EXTENSION);
+    debuguear($extension);
+}
+
+-----
+
+rand() -> retorna un nro aleatorio de entre 9 y 10 digitos
+md5(uniqid("passwordsecreto", true )) -> retorna un "hash" alfanumerico de 32 caracteres del string que le pasemos 
+
+----- 
+
+$_SERVER["DOCUMENT_ROOT"] -> retorna la ruta desde donde se esta sirviendo el proyecto 
+// en este propyecto -> string(38) "C:\xampp\htdocs\bienesraicesMVC\public"
+// no importa el archivo desde donde lo ejecutemoos, el valor siempre sera el mismo
+
+__DIR__ -> constante que retorna la ruta absoluta del archivo desde donde la estemos requiriendo
+// en/includes/config/database.php -> string(47) "C:\xampp\htdocs\bienesraicesMVC\includes\config"
+// en/controllers/PropiedadController.php -> string(43) "C:\xampp\htdocs\bienesraicesMVC\controllers"
+
+-----
+
+* en funciones.php edite la constante CARPETA_IMAGENES vvv 
+
+viejo valor -> define("CARPETA_IMAGENES", __DIR__ . "/../public/imagenes/"); // string(60) "C:\xampp\htdocs\bienesraicesMVC\includes/../public/imagenes/"
+// con este valor, las imagenes se guardan correctamente en /public/imagenes
+
+nuevo valor -> define("CARPETA_IMAGENES", $_SERVER["DOCUMENT_ROOT"] . "/imagenes/");
+// string(47) "C:\xampp\htdocs\bienesraicesMVC\public/imagenes"
+// con este valor, las imagenes tambien se guardan correctamente en /public/imagenes
+
+-----
+
+<form enctype="multipart/form-data"> -> el atributo enctype en <form> permite enviar archivos correctamente
+
+-----
+
+VIDEO 424 
+
+Vamos a usar la libreria de php phpmailer para poder enviar mails desde el formulario de contacto 
+
+repositorio de librerias de composer -> https://packagist.org/
+
+buscamos "phpmailer" -> https://packagist.org/packages/phpmailer/phpmailer
+
+"No por haber instalado phpmailer significa que los mails van a salir. Aun asi necesitamos un servidor de envio de emails, no tenemos uno configurado.
+Ya la mayoria de servidores que contrates, cualquiera que sea de paga, va a tener un servicio de envio de emails.
+Pero en un servidor local, en localhost, tienes que configurarlo, es una tarea que toma demasiado tiempo, pero para hacer mas rapido podemos usar un servicio como mailtrap, y este nos va a permitir conectar el forumulario de contacto del proyecto y va a enviar los emails que los usuarios vayan llenando."
+
+*** APARENTEMENTE Mailtrap es un servidr de mails, y ofrece un servicio gratuito de 100 mails por mes, que sirve para hacer pruebas en desarrollo 
+
+En mailtrap (https://mailtrap.io/)
+* cree una cuenta en mailtrap
+* en el apartado Email Testing/Inboxes, en Integrations, seleccione "Laravel 7+"
+
+En el proyecto, en la consola 
+instale la libreria phpmailer  -> composer require phpmailer/phpmailer -> se instalo la version 6.8 vvv
+
+*** composer.json vvv
+"require": {
+    "intervention/image": "^2.7",
+    "phpmailer/phpmailer": "^6.8"
+},
+
+-----
+
+VIDEO 425 
+
+en PaginasController::contacto() vvv
+
+* la libreria PHPMailer esta orientada a objetos, por eso tenemos que crear una nueva instancia vvv 
+
+    $mail = new PHPMailer();
+
+* "SMTP es el protocolo que se utiliza para el envio de emails.
+   Así como HTTP es un protocolo para visitar sitios web (por ejemplo http://www.google.com)" 
+
+* mailtrap nos da la configuracion de SMTP vvv
+
+apartado Email Testing/Inboxes/Actions/Settings (ruedita), en Integrations -> "Laravel 7+" vvv
+
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=a65ab5083ded37
+MAIL_PASSWORD=e3ffbe3f60333a
+MAIL_ENCRYPTION=tls
+
+* "el contenido de un email se conforma por 2 partes.
+  La parte de arriba, a donde lo vas a enviar, cual es el asunto"
+  La otra parte es el cuerpo del email"
+
+----- 
+
+*** VIDEO 225 -> version final PaginasController::contacto() (explicado didacticamente) vvv
+
+public static function contacto($router) {
+    if($_SERVER["REQUEST_METHOD"] === "POST") {
+        
+        // la configuracion aqui dentro empieza en el VIDEO 425
+        // Crear una instancia de PHPMailer
+        $mail = new PHPMailer();
+
+        // Configurar SMTP (SMTP es el protocolo que se utiliza para el envio de emails)
+        // APRENDIZAJE: me di cuenta que esta configuracion se trata de ejecutar un metodo publico de la clase ( isSMTP() ) y reescribir varios atributos publicos de la clase vvv 
+        /* 
+        - mailtrap nos da la configuracion de SMTP vvv
+        - apartado Email Testing/Inboxes, en Integrations ->"Laravel 7+"
+        - MAIL_MAILER=smtp
+        - MAIL_HOST=sandbox.smtp.mailtrap.io
+        - MAIL_PORT=2525
+        - MAIL_USERNAME=a65ab5083ded37
+        - MAIL_PASSWORD=e3ffbe3f60333a
+        - MAIL_ENCRYPTION=tls
+        */
+        $mail->isSMTP(); // para decirle que vamos a usar SMTP para envio de correos 
+        $mail->Host = 'sandbox.smtp.mailtrap.io'; // especificamos el dominio   
+        $mail->SMTPAuth = true; // decimos que nos vamos a autenticar
+        $mail->Username = 'a65ab5083ded37'; // usuario 
+        $mail->Password = 'e3ffbe3f60333a'; // password 
+        
+        $mail->SMTPSecure = "tls"; 
+        // "tls" para que sean emails no encriptados pero vayan por un tunel seguro
+        // tls = transport layer security
+        // ssl = antes se usaba secure socket layer, pero ya no se utiliza, ahora se usa "tls" que es una forma mas segura (evita que 3eros puedan interceptar emails) 
+        // ssl es el valor que sugiere la documentacion oficial de PHPMailer -> $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;  
+        // mailtrap nos proporciona "tls"
+
+        $mail->Port = 2525; // el puerto sobre el cual se va a conectar 
+        
+        // Configurar el contenido del email
+
+        // Destinatario y asunto 
+        $mail->setFrom('danimerlo@yahoo.com.ar');
+        $mail->addAddress('bsastop@gmail.com', 'BsAs Top');
+        $mail->Subject = 'Ref. Dev Python Jr.';
+
+        // Habilitar HTML
+        $mail->isHTML(true);     
+        $mail->CharSet = "UTF-8";
+
+        // Definir el contenido 
+        $contenido = "<h1><p>Adjunto <span style=\"color:red;\">mi CV</span>. Saludos!</p></h1>";
+        $mail->Body = $contenido;
+        $mail->AltBody = "Adjunto mi CV. Saludos!";
+
+        // Enviar el email 
+        if($mail->send()) {
+        // el metodo send() nos retorna TRUE si el formulario se envió correctamente al servidor de mails y FALSE si no se envió
+        echo "Mensaje Enviado Correctamente";
+        } else {
+        echo "El Mensaje No Se Pudo Enviar";
+        }
+    }
+    $router->render("/paginas/contacto");
+}
+
+*** En resumen, usamos PHPMailer como dependencia o libreria para enviar mensaje a un servidor de mails desde nuestro proyecto, y Mailtrap como servidor de mails gratuito para recibir esos mensajes 
+*** tutorial para configurar PhpMailer y enviar correo desde localhost -> https://www.youtube.com/watch?v=RSlE38lvlys
+
+----- 
+
+VIDEO 427 
+
+en /src/js/app.js vvv
+
+const metodoContacto = document.querySelectorAll('input[name="contacto[contacto]"]');
+*** selector de atributo js 
+*** forma de capturar un elemento html <input> con atributo name="contacto[contacto]"
+
+-----
+
+VIDEO 429 
+
+PaginasController.php -> forma de formatear una fecha vvv 
+
+$date_formated = date('d-m-Y', strtotime("2021-11-15")); === "15-11-2021"
+
+-----
+
+forma de crear un objeto en PHP (instancia de stdClass) vvv 
+
+$objeto_stdClass = new stdClass();
+$objeto_stdClass->nombre = "Lionel";
+$objeto_stdClass->apellido = "Prats";
+debuguear($objeto_stdClass); vvv
+
+stdClass Object
+(
+    [nombre] => Lionel
+    [apellido] => Prats
+)
+
+-----
+
+mail() -> funcion nativa de PHP para enviar mails (INVESTIGAR)
+
+* prueba de como mandar un mail a un correo real desde mi aplicacion, en la ruta /contacto2
+* tutorial SoyDalto -> https://www.youtube.com/watch?v=TtKPhnJDIL0
+
+phpversion() -> funcion nativa de PHP que retorna la version de PHP instalada en el servidor donde esta alojado el proyecto (en mi computadora si estoy trabajando en local)
+
+echo "\r\n" -> genera saltos de linea ("\r" y "\n" aparentemente funciona igual (VERIFICAR))
+
+* forma de omitir errores PHP por pantalla vvv 
+
+debuguear($variableInexistente); // $variableInexistente no existe vvv
+    Warning: Undefined variable $variableInexistente in C:\xampp\htdocs\bienesraicesMVC\controllers\PaginasController.php on line 163
+
+OMITIR ERROR vvv 
+@debuguear($variableInexistente); // $variableInexistente no existe vvv
+    *** no se renderiza el error
+
+----- 
+
+VIDEO 434 
+
+funcion nativa de PHP para validar password en login de usuarios vvv 
+
+password_verify(string $string, string $hashed_string) 
+
+* 1er parametro -> string sin hashear
+* 2do parametro -> string hasheado
+* esta funcion compara ambos strings 
+* retorna true si sus valores no hasheados coinciden
+* retorna false si sus valores no hasheados NO coinciden
+
+----
+
+VIDEO 527 (APPSALON)
+
+Repasando lo aprendido: 
+
+Proteger rutas vvv 
+
+1) en /public/index.php (nuestro ruteador), al final del archivo se ejecuta comprobarRutas() de la clase Router vvv 
+
+use MVC\Router;
+$router = new Router();
+$router->comprobarRutas(); en Router.php () 
+
+2) entonces, comprobarRutas() se ejecuta siempre que se haga una peticion (GET o POST) a nuestra aplicacion 
+
+3) en $router->comprobarRutas() vvv 
+
+function comprobarRutas()
+{
+    $rutas_protegidas = [
+        "/admin",
+        "/propiedades/crear",
+        "/propiedades/actualizar",
+        "/propiedades/eliminar",
+        "/vendedores/crear",
+        "/vendedores/actualizar",
+        "/vendedores/eliminar",
+        "/logout"
+    ];
+
+    $only_guest_paths = [
+        "/login",
+    ];
+
+    session_start();
+
+    $auth = $_SESSION["login"] ?? null;
+
+    $urlActual = $_SERVER["PATH_INFO"] ?? "/";
+
+    if(in_array($urlActual, $rutas_protegidas) && !$auth) {
+        header("Location: /");
+    }
+
+    if(in_array($urlActual, $only_guest_paths) && $auth) {
+        header("Location: /admin");
+    }
+}

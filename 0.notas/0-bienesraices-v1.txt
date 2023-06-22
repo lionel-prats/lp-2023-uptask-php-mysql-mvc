@@ -1,0 +1,40 @@
+"npm run dev" o "npx gulp" para activar gulp 
+
+
+SELECT COUNT(id) as victorias_lio
+FROM partido 
+WHERE 
+(3 IN (ganador1, ganador2) AND 8 IN (perdedor1, perdedor2) )
+
+
+
+SELECT COUNT(id) as victorias_emi
+FROM partido 
+WHERE 
+(8 IN (ganador1, ganador2) AND 3 IN (perdedor1, perdedor2) )
+
+------ 
+
+HISTORIALES 1 CONTRA 1
+
+SELECT fecha, era, grand_slam, fecha_nro, instancia, ganador1, ganador2, perdedor1, perdedor2, set1ganador, set1perdedor, 
+set2ganador, set2perdedor, set3ganador, set3perdedor, set4ganador, set4perdedor, set5ganador, set5perdedor 
+FROM partido 
+WHERE 
+( 
+    ( 3 IN (ganador1, ganador2) AND 6 IN (perdedor1, perdedor2) )
+    OR
+    ( 6 IN (ganador1, ganador2) AND 3 IN (perdedor1, perdedor2) ) 
+)
+AND fecha_nro >= 0
+
+------ 
+
+HISTORIALES PARTIDO ESPECIFICO
+
+SELECT fecha, era, grand_slam, fecha_nro, instancia, ganador1, ganador2, perdedor1, perdedor2, set1ganador, set1perdedor, 
+set2ganador, set2perdedor, set3ganador, set3perdedor, set4ganador, set4perdedor, set5ganador, set5perdedor 
+FROM partido 
+WHERE ganador1 = 5 AND ganador2 = 7 AND perdedor1 = 3 AND perdedor2 = 9
+OR ganador1 = 3 AND ganador2 = 9 AND perdedor1 = 5 AND perdedor2 = 7
+AND fecha_nro >= 0
