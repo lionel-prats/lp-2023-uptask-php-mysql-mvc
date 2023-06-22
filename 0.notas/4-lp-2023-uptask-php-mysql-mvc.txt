@@ -40,3 +40,12 @@ ya de salida instalo la libreria para  leer variables de entorno definidas en el
 5) edito /includes/database.php -> paso las variables de entorno definidas en .env a la conexion a la base de datos, a traves de la variable superglobal $_ENV (que ya tiene cargadas esas variables definidas en .env) (ver /includes/database.php)
 
 -----
+
+VIDEO 564
+
+ya de salida modifico la sigiente linea del metodo comprobarRutas() de la clase Router (es una de las modificaciones que hizo el profesor sobre el final de "appsalon", relativa a las configuraciones necesarias para que el proyecto funcione en produccion) 
+
+public function comprobarRutas() {
+    // $currentUrl = $_SERVER['PATH_INFO'] ?? '/';
+    $currentUrl = $_SERVER['REQUEST_URI'] ?? '/';
+}
