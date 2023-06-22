@@ -1,4 +1,4 @@
-Creé el repo remoto en github y lo sincronizo con el proyecto:
+22/6/23 -> Creé el repo remoto en github y lo sincronizo con el proyecto:
 
 git init 
 git config user.email "lionel.prats.c@gmail.com"
@@ -8,3 +8,35 @@ git commit -m "first commit"
 git branch -M main
 git remote add origin https://github.com/lionel-prats/lp-2023-uptask-php-mysql-mvc.git
 git push -u origin main
+
+----- 
+
+VIDEO 563 
+
+npm i 
+-> para que se instalen las dependencias de npm (se instala /node_modules)
+
+composer update 
+-> se instala /vendor (el composer.json en este punto no tiene librerias externas cargadas - solo tenemos el autoload -; si las tuviera, habria que correr composer install para que se instalen dentro de /vendor)
+
+----- 
+
+* creo la base "uptask_mvc" desde Heidi
+
+-----
+
+ya de salida instalo la libreria para  leer variables de entorno definidas en el .env y hago las configuraciones que explico el profesor al final del proyecto "appsalon"
+
+1) composer require vlucas/phpdotenv
+-> se creó la dependencia en composer.json
+-> se creó /vlucas/phpdotenv en /vendor
+
+2) creo archivo con las variables de entorno de mi proyecto (/includes/.env)
+
+3) seteo las variables de entorno para la conexion a la DB (ver .env)
+
+4) en /includes/app.php instancio la dependencia instalada de vlucas\phpdotenv y algunas configuraciones mas, para poder leer las variables de entorno en el .env y que se agreguen a la variable superglobal de PHP $_ENV
+
+5) edito /includes/database.php -> paso las variables de entorno definidas en .env a la conexion a la base de datos, a traves de la variable superglobal $_ENV (que ya tiene cargadas esas variables definidas en .env) (ver /includes/database.php)
+
+-----

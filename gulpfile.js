@@ -62,3 +62,19 @@ function watchArchivos() {
 exports.css = css;
 exports.watchArchivos = watchArchivos;
 exports.default = parallel(css, javascript,  imagenes, versionWebp,  watchArchivos ); 
+
+// comandos para ejecutar el gulpfile
+
+// npx gulp 
+// funciona así porque definimos "exports.default"
+// si hubieramos definido "exports.cualquiercosa", en la consola tendriamos que correr "npx gulp cualquiercosa"
+
+// npm run gulp 
+// el script "gulp" lo definimos en el package.json
+
+// npm run cualquierscript 
+// el script "cualquierscript" lo definimos en el package.json
+
+// npm start 
+// el script "start" lo definimos en el package.json
+// con el script "start" podemos prescindir de "run" cuando corremos el comando para ejecutar gulp
