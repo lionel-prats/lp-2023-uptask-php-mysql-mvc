@@ -1,0 +1,8 @@
+node_modules/
+vendor/
+public/build/
+
+.env
+package-lock.json
+composer.lock
+
