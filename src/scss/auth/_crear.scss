@@ -1,0 +1,18 @@
+@use "base/variables" as v;
+@use "base/mixins" as m;
+
+.crear {
+    .uptask {
+        margin-top: v.$separacion;
+        font-size: 7rem;
+        text-align: center;
+        background: linear-gradient(to right, v.$cyan 0%, lighten(v.$cyan, 30%) 100%);
+        // gradiente de izquierda a derecha -> arranca con cyan (0%) y termina con cyan uun 30% mas claro (100%) (VIDEO 569)
+        color: transparent;
+        background-clip: text; // (VIDEO 569)
+        border: 1px solid #000000;
+        @include m.tablet {
+            font-size: 10rem
+        };
+    }
+}
