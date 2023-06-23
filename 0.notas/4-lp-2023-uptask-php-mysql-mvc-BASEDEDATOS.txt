@@ -1,0 +1,17 @@
+* creo la base "uptask_mvc" desde Heidi
+
+----- 
+
+VIDEO 577
+
+Creo la tabla usuarios en la DB 
+
+CREATE TABLE usuarios (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  nombre varchar(30) DEFAULT NULL,
+  email varchar(30) DEFAULT NULL,
+  password varchar(60) DEFAULT NULL,
+  token varchar(15) DEFAULT NULL,
+  confirmado tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (id)
+) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8
