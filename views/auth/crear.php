@@ -31,7 +31,7 @@
                 >
             </div>
             <div class="campo">
-                <label for="password">Repetir Password</label>
+                <label for="password2">Repetir Password</label>
                 <input 
                     type="password"
                     id="password2"

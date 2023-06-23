@@ -1,0 +1,9 @@
+@use "base/variables" as v;
+@use "base/mixins" as m;
+
+.mensaje {
+    margin-top: v.$separacion;
+    .uptask {
+        @include m.textoDegradado(v.$naranja);
+    }
+}
