@@ -10,6 +10,7 @@
                     id="nombre"
                     placeholder="Tu Nombre"
                     name="nombre"
+                    value="<?= $usuario->nombre; ?>"
                 >
             </div>
             <div class="campo">
@@ -19,6 +20,7 @@
                     id="email"
                     placeholder="Tu Email"
                     name="email"
+                    value="<?= $usuario->email; ?>"
                 >
             </div>
             <div class="campo">
