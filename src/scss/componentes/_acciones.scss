@@ -3,7 +3,6 @@
 
 .acciones {
     margin-top: v.$separacion;
-    border: 1px solid #000000;
     @include m.tablet {
         display: flex;
         justify-content: space-between;
@@ -17,6 +16,4 @@
             margin-bottom: 0;
         }
     }
-
-
 }
