@@ -58,7 +58,7 @@ VIDEO 577
 
 Creo la tabla usuarios en la DB 
 
-CREATE TABLE usuarios (
+CREATE TABLE IF NOT EXISTS usuarios (
   id int(11) NOT NULL AUTO_INCREMENT,
   nombre varchar(30) DEFAULT NULL,
   email varchar(30) DEFAULT NULL,
@@ -67,3 +67,10 @@ CREATE TABLE usuarios (
   confirmado tinyint(1) DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8
+
+----- 
+
+VIDEO 583
+
+comando para reiniciar el AUTOINCREMENT de id de usuarios
+ALTER TABLE usuarios AUTO_INCREMENT = 1;

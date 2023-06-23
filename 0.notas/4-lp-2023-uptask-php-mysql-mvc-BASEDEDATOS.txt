@@ -6,7 +6,7 @@ VIDEO 577
 
 Creo la tabla usuarios en la DB 
 
-CREATE TABLE usuarios (
+CREATE TABLE IF NOT EXISTS usuarios (
   id int(11) NOT NULL AUTO_INCREMENT,
   nombre varchar(30) DEFAULT NULL,
   email varchar(30) DEFAULT NULL,

@@ -27,7 +27,23 @@ class LoginController {
             $usuario->sincronizar($_POST);
             $alertas = $usuario->validarNuevaCuenta();
             if(empty($alertas)) {
-
+                $existeUsuario = Usuario::where("email", $usuario->email);
+                if($existeUsuario) {
+                    Usuario::setAlerta("error","EL mail ingresado ya se encuentra registrado");
+                    $alertas = Usuario::getAlertas();
+                } else {
+                    // $usuario->hashPassword();
+                    debuguear("ceando usuario...");
+                    // $usuario->crearToken();
+                    // $email = new Email(
+                    //     $usuario->email,
+                    //     $usuario->nombre,
+                    //     $usuario->token
+                    // );
+                    // $email->enviarConfirmacion();
+                    // $resultado = $usuario->guardar();
+                    // Usuario::setAlerta("exito", "Te hemos enviado un correo para que termines de completar el registro");
+                } 
             }
         }
         $router->render("auth/crear", [
