@@ -10,6 +10,7 @@ class Usuario extends ActiveRecord {
     public $nombre;
     public $email;
     public $password;
+    public $password2;
     public $token;
     public $confirmado;
 
@@ -19,6 +20,7 @@ class Usuario extends ActiveRecord {
         $this->nombre = $args['nombre'] ?? '';
         $this->email = $args['email'] ?? '';
         $this->password = $args['password'] ?? '';
+        $this->password2 = $args['password2'] ?? '';
         $this->token = $args['token'] ?? '';
         $this->confirmado = $args['confirmado'] ?? '0';
     }
@@ -33,9 +35,11 @@ class Usuario extends ActiveRecord {
         } elseif(!filter_var($this->email, FILTER_VALIDATE_EMAIL)) {
             self::$alertas["error"][] = "El email ingresado no es válido";
         }
-        /* if(!$this->password || strlen($this->password) < 6) {
-            self::$alertas["error"][] = "El password es obligatorio y debe contener al menos 6 caracteres";
-        } */
+        if((!$this->password || strlen($this->password) < 6) || (!$this->password2 || strlen($this->password2) < 6)) {
+            self::$alertas["error"][] = "Los 2 campos de contraseña son obligatorios y deben contener al menos 6 caracteres";
+        } elseif($this->password !== $this->password2) {
+            self::$alertas["error"][] = "Las contraseñas no coinciden";
+        }
         return self::$alertas;
     }
 
