@@ -39,7 +39,7 @@
                     name="password2"
                 >
             </div>
-            <input type="submit" value="Iniciar Sesión" class="boton">
+            <input type="submit" value="Crear Cuenta" class="boton">
         </form>
         <div class="acciones">
             <a href="/">Iniciar Sesión</a>
