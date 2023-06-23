@@ -36,9 +36,9 @@ class Usuario extends ActiveRecord {
             self::$alertas["error"][] = "El email ingresado no es válido";
         }
         if((!$this->password || strlen($this->password) < 6) || (!$this->password2 || strlen($this->password2) < 6)) {
-            self::$alertas["error"][] = "Los 2 campos de contraseña son obligatorios y deben contener al menos 6 caracteres";
+            self::$alertas["error"][] = "El password es obligatorio para ambos campos, de una longitud mínima de 6 caracteres y deben coincidir";
         } elseif($this->password !== $this->password2) {
-            self::$alertas["error"][] = "Las contraseñas no coinciden";
+            self::$alertas["error"][] = "Los passwords ingresados no coinciden";
         }
         return self::$alertas;
     }
