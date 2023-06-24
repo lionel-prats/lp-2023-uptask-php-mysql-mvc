@@ -97,3 +97,14 @@ composer require phpmailer/phpmailer
 * composer update -> para que se actualizen el composer.json y el composer.lock
 *** se agrega la dependencia al composer.jon 
 *** se crea /vendor/phpmailer 
+
+----- 
+
+VIDEO 586 
+
+pasé las credenciales de MailTrap al .env para poder subir /classes/Email.php a github
+
+----- 
+
+
+

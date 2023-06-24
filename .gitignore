@@ -5,5 +5,4 @@ public/build/
 .env
 package-lock.json
 composer.lock
-Email.php
 
