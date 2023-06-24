@@ -87,3 +87,13 @@ VIDEO 584
   -> funcion PHP para que hashea el string o int que le pasemos como argumento (no es la mejor opcion) 
   -> si le pasamos el string "pepito" siempre va a retornar el mismo hash 
   -> el hash siempre sera de 32 caracteres
+
+----- 
+
+VIDEO 585 
+
+* Instalamos la dependencia PHP Mailer 
+composer require phpmailer/phpmailer
+* composer update -> para que se actualizen el composer.json y el composer.lock
+*** se agrega la dependencia al composer.jon 
+*** se crea /vendor/phpmailer 

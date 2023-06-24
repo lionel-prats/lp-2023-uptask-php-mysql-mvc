@@ -3,6 +3,7 @@
 namespace Controllers;
 
 use MVC\Router;
+use Classes\Email;
 use Model\Usuario;
 
 class LoginController {
@@ -36,15 +37,15 @@ class LoginController {
                     unset($usuario->password2);
                     $usuario->crearToken();
                     $resultado = $usuario->guardar();
+                    $email = new Email(
+                        $usuario->email,
+                        $usuario->nombre,
+                        $usuario->token
+                    );
+                    $email->enviarConfirmacion();
+                    // Usuario::setAlerta("exito", "Te hemos enviado un correo para que termines de completar el registro");
                     if($resultado) 
                         header('Location: /mensaje');
-                    // $email = new Email(
-                    //     $usuario->email,
-                    //     $usuario->nombre,
-                    //     $usuario->token
-                    // );
-                    // $email->enviarConfirmacion();
-                    // Usuario::setAlerta("exito", "Te hemos enviado un correo para que termines de completar el registro");
                 } 
             }
         }
