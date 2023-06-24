@@ -32,16 +32,18 @@ class LoginController {
                     Usuario::setAlerta("error","EL mail ingresado ya se encuentra registrado");
                     $alertas = Usuario::getAlertas();
                 } else {
-                    // $usuario->hashPassword();
-                    debuguear("ceando usuario...");
-                    // $usuario->crearToken();
+                    $usuario->hashPassword();
+                    unset($usuario->password2);
+                    $usuario->crearToken();
+                    $resultado = $usuario->guardar();
+                    if($resultado) 
+                        header('Location: /mensaje');
                     // $email = new Email(
                     //     $usuario->email,
                     //     $usuario->nombre,
                     //     $usuario->token
                     // );
                     // $email->enviarConfirmacion();
-                    // $resultado = $usuario->guardar();
                     // Usuario::setAlerta("exito", "Te hemos enviado un correo para que termines de completar el registro");
                 } 
             }

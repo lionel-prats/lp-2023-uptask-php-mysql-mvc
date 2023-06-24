@@ -4,7 +4,7 @@ namespace Model;
 
 class Usuario extends ActiveRecord {
     protected static $tabla = 'usuarios';
-    protected static $columnasDB = ['id','nombre','apellido','email','password','telefono','admin','confirmado','token'];
+    protected static $columnasDB = ['id','nombre','email','password','token','confirmado'];
 
     public $id;
     public $nombre;
@@ -42,5 +42,14 @@ class Usuario extends ActiveRecord {
         }
         return self::$alertas;
     }
-
+    // hashear password
+    public function hashPassword() {
+        $this->password = password_hash($this->password, PASSWORD_BCRYPT);
+        return;
+    }
+    // token para creacion de cuenta
+    public function creartoken() {
+        $this->token = md5(uniqid());
+        return;
+    }
 }

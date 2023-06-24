@@ -50,7 +50,7 @@ public function comprobarRutas() {
     $currentUrl = $_SERVER['REQUEST_URI'] ?? '/';
 }
 
-*** añ final revertí este cambio porque en local comprobé que podía traerme problemas con algunas rutas (calculo que la propiedad $_SERVER['REQUEST_URI'] debe existir en servidores remotos, o algo por el estilo)
+*** al final revertí este cambio porque en local comprobé que podía traerme problemas con algunas rutas (calculo que la propiedad $_SERVER['REQUEST_URI'] debe existir en servidores remotos, o algo por el estilo)
 
 ----- 
 
@@ -63,7 +63,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
   nombre varchar(30) DEFAULT NULL,
   email varchar(30) DEFAULT NULL,
   password varchar(60) DEFAULT NULL,
-  token varchar(15) DEFAULT NULL,
+  token varchar(32) DEFAULT NULL,
   confirmado tinyint(1) DEFAULT NULL,
   PRIMARY KEY (id)
 ) ENGINE=InnoDB AUTO_INCREMENT=44 DEFAULT CHARSET=utf8
@@ -74,3 +74,16 @@ VIDEO 583
 
 comando para reiniciar el AUTOINCREMENT de id de usuarios
 ALTER TABLE usuarios AUTO_INCREMENT = 1;
+
+----- 
+
+VIDEO 584
+
+* unset($usuario->password2); // funcion PHP para eliminar una propiedad de un objeto u array (indexado u asociativo)
+
+* uniqid(); -> funcion PHP para generar un hash muy poco seguro -> 64964e72a58f5
+
+* md5($variable); 
+  -> funcion PHP para que hashea el string o int que le pasemos como argumento (no es la mejor opcion) 
+  -> si le pasamos el string "pepito" siempre va a retornar el mismo hash 
+  -> el hash siempre sera de 32 caracteres
