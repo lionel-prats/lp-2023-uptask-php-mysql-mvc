@@ -43,7 +43,6 @@ class LoginController {
                         $usuario->token
                     );
                     $email->enviarConfirmacion();
-                    // Usuario::setAlerta("exito", "Te hemos enviado un correo para que termines de completar el registro");
                     if($resultado) 
                         header('Location: /mensaje');
                 } 
@@ -81,8 +80,28 @@ class LoginController {
     }
 
     public static function confirmar(Router $router){
+        $alertas = [];
+        if(!isset($_GET['email']) || !isset($_GET['token'])) 
+            header('Location: /');
+        elseif(!filter_var(s($_GET['email']), FILTER_VALIDATE_EMAIL))
+            header('Location: /');
+        $email = s($_GET['email']);
+        $usuario = Usuario::where('email', $email); 
+        if(empty($usuario))
+            header('Location: /');
+        elseif($usuario->token != $_GET['token'])
+            header('Location: /');
+        else {
+            $usuario->confirmado = "1";
+            unset($usuario->password2);
+            $usuario->token = '';
+            $usuario->guardar();
+            Usuario::setAlerta("exito", "Tu cuenta ha sido confirmada. Ya puedes iniciar sesión.");
+        }
+        $alertas = Usuario::getAlertas();
         $router->render("auth/confirmar", [
-            'titulo' => 'Confirma tu cuenta UpTask'
+            'titulo' => 'Confirma tu cuenta UpTask',
+            'alertas' => $alertas 
         ]);
     }
 

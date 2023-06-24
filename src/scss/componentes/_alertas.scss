@@ -7,10 +7,16 @@
     font-weight: 900;
     text-transform: uppercase;
     background-color: v.$rojo;
-    color: v.$rojo;
-
+    
     &.error {
         border-left: .5rem solid v.$rojo;
         background-color: lighten(v.$rojo, 60%);
+        color: v.$rojo;
+    }
+    
+    &.exito {
+        border-left: .5rem solid v.$verde;
+        background-color: lighten(v.$verde, 60%);
+        color: v.$verde;
     }
 }

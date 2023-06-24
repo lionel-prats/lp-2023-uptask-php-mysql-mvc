@@ -29,12 +29,13 @@ class Email {
         $mail->isHTML(TRUE);
         $mail->CharSet = 'UTF-8';
 
+        $email = $this->email;
         $nombre = $this->nombre;
         $token = $this->token;
         $contenido = "
             <html>
                 <p><strong>Hola $nombre</strong>. Has creado tu cuenta en UpTask, solo debes confirmarla en el siguiente enlace.</p>
-                <p>Presiona aquí: <a href='http://localhost:3000/confirmar?token=$token'>Confirmar</a></p>
+                <p>Presiona aquí: <a href='http://localhost:3000/confirmar?email=$email&token=$token'>Confirmar</a></p>
                 <p>Si tu no creaste esta cuenta, puedes ignorar este mensaje.</p>
             </html>
         ";
