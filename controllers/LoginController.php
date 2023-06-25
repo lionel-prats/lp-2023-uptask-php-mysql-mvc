@@ -9,11 +9,46 @@ use Model\Usuario;
 class LoginController {
     
     public static function login(Router $router){
-        if($_SERVER["REQUEST_METHOD"]){
-
+        $mostrarFormulario = true;
+        $usuario = new Usuario();
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $usuario->sincronizar($_POST);
+            $alertas = $usuario->validarLogin();
+            if(empty($alertas)){
+                $passwordIngresado = $usuario->password;
+                $usuario = Usuario::where("email", $usuario->email);
+                if($usuario) {
+                    if( $usuario->comprobarPassword($passwordIngresado) ) {
+                        if(!$usuario->confirmado){
+                            Usuario::setAlerta("error", "Hola <span class='datoUsuario'>$usuario->nombre</span>! Aún no has confirmado tu cuenta.");
+                            Usuario::setAlerta("error", "Te hemos enviado un mail a <span class='datoUsuario'>$usuario->email</span> el día xxxx/xx/xx.");
+                            Usuario::setAlerta("error", "Sigue las instrucciones de ese mail para confirmar tu cuenta.");
+                            Usuario::setAlerta("error", "Luego de confirmar tu cuenta podrás iniciar sesión.");
+                            $mostrarFormulario = false;
+                        } else {
+                            if(!isset($_SESSION)){
+                                session_start();
+                            }
+                            $_SESSION["id"] = $usuario->id;
+                            $_SESSION["nombre"] = $usuario->nombre;
+                            $_SESSION["email"] = $usuario->email;
+                            $_SESSION["login"] = true;
+                            header("Location: /proyectos");
+                        }
+                    } else {
+                        Usuario::setAlerta("error", "Credenciales inválidas");
+                        $usuario->email = '';
+                    }
+                } else 
+                    Usuario::setAlerta("error","Credenciales inválidas");
+            } 
         }
+        $alertas = Usuario::getAlertas();
         $router->render("auth/login", [
-            'titulo' => 'Iniciar Sesión'
+            'titulo' => 'Iniciar Sesión',
+            'alertas' => $alertas,
+            'usuario' => $usuario,
+            'mostrarFormulario' => $mostrarFormulario 
         ]);
     }
     
@@ -128,7 +163,7 @@ class LoginController {
                 $usuario->hashPassword();
                 $resultado = $usuario->guardar();
                 if($resultado) {
-                    $usuario::setAlerta("exito","$usuario->nombre, tu contraseña ha sido modificada. Ya puedes iniciar sesión");
+                    $usuario::setAlerta("exito","Hola $usuario->nombre! Tu contraseña ha sido modificada. Ya puedes iniciar sesión");
                     $mostrarFormulario = false;
                 }
             }
