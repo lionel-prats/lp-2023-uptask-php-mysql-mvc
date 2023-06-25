@@ -56,11 +56,54 @@ class LoginController {
     }
     
     public static function olvide(Router $router){
-        if($_SERVER["REQUEST_METHOD"]){
-
+        $mostrarFormulario = true;
+        $email = "";
+        if($_SERVER["REQUEST_METHOD"] === "POST") {
+            $usuario = new Usuario($_POST);
+            $email = $usuario->email;
+            $alertas = $usuario->validarEmail();
+            if(empty($alertas)) {
+                $usuario = Usuario::where("email", $usuario->email);
+                if($usuario){
+                    if($usuario->confirmado) {
+                        if($usuario->token){
+                            Usuario::setAlerta("error", "Hola <span class='datoUsuario'>$usuario->nombre</span>! Ya solicitaste reestablecer tu contraseña.");
+                            Usuario::setAlerta("error", "Te hemos enviado un mail a <span class='datoUsuario'>$usuario->email</span> el día xxxx/xx/xx para que puedas hacerlo.");
+                            Usuario::setAlerta("error", "Sigue las instrucciones de ese mail para crear una nueva.");
+                            $mostrarFormulario = false;
+                        } else {
+                            $usuario->crearToken();
+                            $resultado = $usuario->guardar();
+                            $email = new Email(
+                                $usuario->email,
+                                $usuario->nombre,
+                                $usuario->token
+                            );
+                            $email->enviarInstrucciones();
+                            if($resultado){
+                                Usuario::setAlerta("exito", "Hola $usuario->nombre! Te enviamos un email con las instrucciones para reestablecer tu password.");
+                                $mostrarFormulario = false;
+                            }
+                        }
+                    } else {
+                        Usuario::setAlerta("error", "Hola <span class='datoUsuario'>$usuario->nombre</span>! Aún no has confirmado tu cuenta.");
+                        Usuario::setAlerta("error", "Te hemos enviado un mail a <span class='datoUsuario'>$usuario->email</span> el día xxxx/xx/xx.");
+                        Usuario::setAlerta("error", "Sigue las instrucciones de ese mail para confirmar tu cuenta.");
+                        Usuario::setAlerta("error", "Luego de confirmar tu cuenta podrás generar una nueva contraseña.");
+                        $mostrarFormulario = false;
+                    }
+                } else {
+                    Usuario::setAlerta("error", "El mail ingresado no pertence a ningún usuario registrado");
+                }        
+            }
         }
+        $alertas = Usuario::getAlertas();
+
         $router->render("auth/olvide", [
-            'titulo' => 'Recuperar contraseña'
+            'titulo' => 'Recuperar contraseña',
+            'mostrarFormulario' => $mostrarFormulario,
+            'email' => $email,
+            'alertas' => $alertas
         ]);
     }
     
