@@ -2,7 +2,8 @@
 
 function debuguear($variable) : string {
     echo "<pre>";
-    var_dump($variable);
+    // var_dump($variable);
+    print_r($variable);
     echo "</pre>";
     exit;
 }

@@ -108,11 +108,36 @@ class LoginController {
     }
     
     public static function reestablecer(Router $router){
-        if($_SERVER["REQUEST_METHOD"]){
+        $alertas = [];
+        $mostrarFormulario = true;
+        if(!isset($_GET['token'])) 
+            header('Location: /');
 
+        $token = s($_GET['token']);
+        
+        $usuario = Usuario::where('token', $token); 
+        
+        if(empty($usuario))
+            header('Location: /');
+
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $usuario->sincronizar($_POST);
+            $alertas = $usuario->validarPassword();
+            if(empty($alertas)) {
+                $usuario->token = '';
+                $usuario->hashPassword();
+                $resultado = $usuario->guardar();
+                if($resultado) {
+                    $usuario::setAlerta("exito","$usuario->nombre, tu contraseña ha sido modificada. Ya puedes iniciar sesión");
+                    $mostrarFormulario = false;
+                }
+            }
         }
+        $alertas = Usuario::getAlertas();
         $router->render("auth/reestablecer", [
-            'titulo' => 'Reestablecer contraseña'
+            'titulo' => 'Reestablecer contraseña',
+            'alertas' => $alertas,
+            'mostrarFormulario' => $mostrarFormulario 
         ]);
     }
 

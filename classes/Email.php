@@ -61,7 +61,7 @@ class Email {
         $contenido = "
             <html>
                 <p><strong>Hola $this->nombre</strong>. Parece que has olvidado tu contraseña.</p>
-                <p>Presiona <a href='http://localhost:3000/reestablecer?email=$email&token=$token'>aquí</a> para generar una nueva.</p>
+                <p>Presiona <a href='http://localhost:3000/reestablecer?token=$token'>aquí</a> para generar una nueva.</p>
                 <p>Si tu no solicitaste este cambio, puedes ignorar este mensaje.</p>
             </html>
         ";

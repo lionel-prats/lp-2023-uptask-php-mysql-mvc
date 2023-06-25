@@ -50,6 +50,14 @@ class Usuario extends ActiveRecord {
         }
         return self::$alertas; 
     }
+    public function validarPassword() {
+        if((!$this->password || strlen($this->password) < 6) || (!$this->password2 || strlen($this->password2) < 6)) {
+            self::$alertas["error"][] = "El password es obligatorio para ambos campos, de una longitud mínima de 6 caracteres y deben coincidir";
+        } elseif($this->password !== $this->password2) {
+            self::$alertas["error"][] = "Los passwords ingresados no coinciden";
+        }
+        return self::$alertas; 
+    }
     // hashear password
     public function hashPassword() {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
