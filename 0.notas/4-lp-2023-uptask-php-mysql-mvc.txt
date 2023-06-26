@@ -110,3 +110,32 @@ VIDEO 599
 
 CRM -> Customer Relationship Management (Gestión de la Relación con el Cliente)
 
+----- 
+
+VIDEO 606
+
+Creé la tabla proyectos con ayuda de Chat GTP vvv 
+
+* en mysql, necesito crear la tabla proyectos
+* con los campos:
+id int(11) NOT NULL AUTO_INCREMENT,
+proyecto VARCHAR(60) DEFAULT NULL,
+url VARCHAR(32) DEFAULT NULL,
+propietarioId INT(11)
+
+* id es PK
+* propietarioId es FK (apunta a la tabla usuarios, campo id)
+* proyectos tiene que tener el constrait ON DELETE CASCADE 
+
+como seria la consulta sql? vvv
+
+CREATE TABLE proyectos (
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  proyecto VARCHAR(60) DEFAULT NULL,
+  url VARCHAR(32) DEFAULT NULL,
+  propietarioId INT(11),
+  PRIMARY KEY (id),
+  FOREIGN KEY (propietarioId) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-----
