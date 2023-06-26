@@ -19,7 +19,10 @@ class DashboardController {
             $proyecto= new Proyecto($_POST);
             $alertas = $proyecto->validarProyecto();
             if(empty($alertas)){
-                debuguear($proyecto);
+                $proyecto->url = md5(uniqid());
+                $proyecto->propietarioId = $_SESSION['id'];
+                $proyecto->guardar();
+                header('Location: /proyecto?id=' . $proyecto->url);
             }
         }
 
