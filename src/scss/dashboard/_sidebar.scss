@@ -22,7 +22,8 @@
             transition-property: background-color;
             transition-duration: 300ms;
 
-            &:hover {
+            &:hover,
+            &.activo {
                 border-radius: .5rem;
                 background-color: darken(v.$indigo, 20%);
             }
@@ -30,5 +31,4 @@
         }
         
     }
-    
 }
