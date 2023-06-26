@@ -106,5 +106,7 @@ pasé las credenciales de MailTrap al .env para poder subir /classes/Email.php a
 
 ----- 
 
+VIDEO 599 
 
+CRM -> Customer Relationship Management (Gestión de la Relación con el Cliente)
 
