@@ -143,3 +143,19 @@ CREATE TABLE proyectos (
 VIDEO 614
 
 &#43; -> entidad HTML -> "+"
+
+----- 
+
+VIDEO 615
+
+JavaScript -> IIFE -> Inmediately Invoke Function Expression vvv 
+
+(function() {
+    const hola = "hola mundo";
+})();
+
+* es como definicr un scope para un bloque de codigo
+* en este video, el profesor define este codigo en tareas.js 
+* y compruebo que hola no esta disponible en app.js
+* tambien compruebo que hola no esta disponible fuera de la IIFE
+* tambien compruebo que puedo declarar una constante o variable hola en app.js, sin que la consola me tire error

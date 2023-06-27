@@ -1,10 +1,6 @@
 @use "base/variables" as v;
 @use "base/mixins" as m;
 
-.contenedor-sm {
-    border: 1px solid #000000;
-}
-
 .contenedor-nueva-tarea {
     display: flex;
     justify-content: center;
