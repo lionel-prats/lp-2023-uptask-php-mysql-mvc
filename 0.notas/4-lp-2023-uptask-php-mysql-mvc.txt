@@ -139,3 +139,7 @@ CREATE TABLE proyectos (
 );
 
 -----
+
+VIDEO 614
+
+&#43; -> entidad HTML -> "+"
