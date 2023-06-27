@@ -14,5 +14,32 @@
     <?php echo $contenido; ?>
     <?php echo $script ?? ''; ?>
 
+    <?php 
+        /* echo '
+            <div class="modal">
+                <form class="formulario nueva-tarea">
+                    <legend>Añade una nueva tarea</legend>
+                    <div class="campo">
+                        <label for="tarea">Tarea</label>
+                        <input 
+                            type="text"
+                            id="tarea"
+                            placeholder="Añadir Tarea al Proyecto Actual"
+                            name="tarea"
+                        >
+                    </div>
+                    <div class="opciones">
+                        <input 
+                            type="submit"
+                            class="submit-nueva-tarea"
+                            value="Añadir Tarea"
+                        >
+                        <button type="button" class="cerrar-modal">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        '; */
+    ?>
+
 </body>
 </html>
