@@ -25,5 +25,10 @@
             opacity: 1;
             transform: translateY(-50%);
         }
+        &.cerrar {
+            transform: translateY(-30rem);
+            opacity: 0;
+
+        }
     }
 }

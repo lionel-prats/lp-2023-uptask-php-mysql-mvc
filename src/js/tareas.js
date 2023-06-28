@@ -34,5 +34,16 @@
             const formulario = document.querySelector('.formulario');
             formulario.classList.add('animar');
         }, 0);
+        // https://developer.mozilla.org/es/docs/Web/JavaScript/Event_loop
+        modal.addEventListener('click', function(e){ // VIDEO 618
+            e.preventDefault();
+            if(e.target.classList.contains('cerrar-modal')){
+                const formulario = document.querySelector('.formulario');
+                formulario.classList.add('cerrar');
+                setTimeout(() => {
+                    modal.remove();
+                }, 500);
+            }
+        })
     }
 })();

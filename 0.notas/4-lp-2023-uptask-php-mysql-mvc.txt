@@ -159,3 +159,10 @@ JavaScript -> IIFE -> Inmediately Invoke Function Expression vvv
 * y compruebo que hola no esta disponible en app.js
 * tambien compruebo que hola no esta disponible fuera de la IIFE
 * tambien compruebo que puedo declarar una constante o variable hola en app.js, sin que la consola me tire error
+
+----- 
+
+VIDEO 618
+
+Modelo de concurrencia y loop de eventos en JS vvv
+https://developer.mozilla.org/es/docs/Web/JavaScript/Event_loop
