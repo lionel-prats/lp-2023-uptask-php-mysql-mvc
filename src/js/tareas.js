@@ -34,7 +34,10 @@
             const formulario = document.querySelector('.formulario');
             formulario.classList.add('animar');
         }, 0);
-        // https://developer.mozilla.org/es/docs/Web/JavaScript/Event_loop
+
+        // Modelo de concurrencia y loop de eventos en JS
+        // https://developer.mozilla.org/es/docs/Web/JavaScript/Event_loop 
+        // ver 4-lp-2023-uptask-php-mysql-mvc.txt -> VIDEO 618 
         modal.addEventListener('click', function(e){ // VIDEO 618
             e.preventDefault();
             if(e.target.classList.contains('cerrar-modal')){
