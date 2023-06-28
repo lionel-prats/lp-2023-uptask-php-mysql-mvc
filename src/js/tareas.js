@@ -29,7 +29,7 @@
                 </div>
             </form>
         `;
-        document.querySelector('body').appendChild(modal);
+        document.querySelector('.dashboard').appendChild(modal);
         setTimeout(() => {
             const formulario = document.querySelector('.formulario');
             formulario.classList.add('animar');
@@ -53,10 +53,29 @@
             function submitFormularioNuevaTarea(){
                 const tarea = document.querySelector('#tarea').value.trim();
                 if(tarea === '') {
+                    const legendFormCrearTarea = document.querySelector('.formulario legend');
+                    mostrarAlerta('El nombre de la tarea es obligatorio', 'error', legendFormCrearTarea);
                     return;
                 }
-                    
-                console.log("despues del if");
+                agregarTarea(tarea);
+            }
+            // muestra un mensaje en la interfaz (VIDEO 621)
+            function mostrarAlerta(mensaje, tipo, referencia){
+                const alertaPrevia = document.querySelector('.alerta')
+                if(alertaPrevia)
+                    alertaPrevia.remove();
+                const alerta = document.createElement('DIV');
+                alerta.classList.add('alerta', tipo);
+                alerta.textContent = mensaje;
+                setTimeout(() => {
+                    referencia.parentElement.insertBefore(alerta, referencia.nextElementSibling)
+                }, 30);
+                // referencia.insertAdjacentElement('afterend', alerta);
+                // referencia.parentElement.insertBefore(alerta, referencia);
+            }
+            // Fetch al servidor para agregar una tarea a la tabla tareas
+            function agregarTarea(tarea){
+
             }
         })        
     }

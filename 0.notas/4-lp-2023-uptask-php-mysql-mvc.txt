@@ -166,3 +166,18 @@ VIDEO 618
 
 Modelo de concurrencia y loop de eventos en JS vvv
 https://developer.mozilla.org/es/docs/Web/JavaScript/Event_loop
+
+----- 
+
+VIDEO 621
+
+DOM Traversing (recorrer el DOM)
+
+* algunos ejemplos de como recorrer el DOM a partir del elemento capturado "referencia" e insertar elementos desde JS vvv 
+
+referencia.insertAdjacentElement('afterend', alerta);
+referencia.parentElement.insertBefore(alerta, referencia.nextElementSibling)
+referencia.parentElement.insertBefore(alerta, referencia);
+
+
+
