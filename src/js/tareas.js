@@ -73,9 +73,31 @@
                 // referencia.insertAdjacentElement('afterend', alerta);
                 // referencia.parentElement.insertBefore(alerta, referencia);
             }
+            
             // Fetch al servidor para agregar una tarea a la tabla tareas
-            function agregarTarea(tarea){
+            async function agregarTarea(tarea){
+                // const {id, fecha, hora, servicios} = cita;
+                
+                // const arrayIdServicios = servicios.map( servicio => servicio.id)
+                
+                const datos = new FormData(); // objeto nativo de JS para enviar datos al servidor (VIDEO 517)
+                datos.append('nombre', tarea);
+                datos.append('estado', 1);
+                datos.append('proyectoId', 75);
+            
+                try {
+                    const url = 'http://localhost:3000/api/tarea';
+                    const respuesta = await fetch(url, {
+                        method: 'POST',
+                        body: datos
+                    });
+                    const resultado = await respuesta.json();
+                    
+                    console.log(resultado);
 
+                } catch (error) {
+                    console.log(error);
+                }
             }
         })        
     }
