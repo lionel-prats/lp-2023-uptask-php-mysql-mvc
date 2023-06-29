@@ -179,5 +179,19 @@ referencia.insertAdjacentElement('afterend', alerta);
 referencia.parentElement.insertBefore(alerta, referencia.nextElementSibling)
 referencia.parentElement.insertBefore(alerta, referencia);
 
+-----
+
+VIDEO 622 
+
+CREATE TABLE tareas (
+  id INT(11) NOT NULL AUTO_INCREMENT,
+  nombre VARCHAR(60) DEFAULT NULL,
+  estado TINYINT(1) DEFAULT NULL,
+  proyectoId INT(11),
+  PRIMARY KEY (id),
+  FOREIGN KEY (proyectoId) REFERENCES proyectos(id) ON DELETE CASCADE
+);
+
+
 
 
