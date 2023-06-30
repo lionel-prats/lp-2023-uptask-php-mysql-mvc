@@ -91,8 +91,11 @@
                         body: datos
                     });
                     const resultado = await respuesta.json();
-                    
+
                     console.log(resultado);
+
+                    const legendFormCrearTarea = document.querySelector('.formulario legend');
+                    mostrarAlerta(resultado.mensaje, resultado.tipo, legendFormCrearTarea);
 
                 } catch (error) {
                     console.log(error);
