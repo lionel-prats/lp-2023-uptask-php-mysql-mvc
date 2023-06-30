@@ -77,7 +77,7 @@
             // Fetch al servidor para agregar una tarea a la tabla tareas
             async function agregarTarea(tarea){
 
-                // identificador del proyecto al cual le vamos a agrregar una tarea (tabla "tareas", campo "url")
+                // identificador del proyecto al cual le vamos a agrregar una tarea (tabla "proyectos", campo "url")
                 proyecto = obtenerProyecto();
 
                 const datos = new FormData(); // objeto nativo de JS para enviar datos al servidor (VIDEO 517)
@@ -92,11 +92,16 @@
                     });
                     const resultado = await respuesta.json();
 
-                    console.log(resultado);
-
                     const legendFormCrearTarea = document.querySelector('.formulario legend');
                     mostrarAlerta(resultado.mensaje, resultado.tipo, legendFormCrearTarea);
 
+                    if(resultado.tipo === 'exito'){
+                        document.querySelector('.submit-nueva-tarea').disabled = true;
+                        setTimeout(() => {
+                            modal.remove();
+                        }, 3000);
+                    }
+                    
                 } catch (error) {
                     console.log(error);
                 }
@@ -104,7 +109,7 @@
 
             function obtenerProyecto(){
                 // window.location nos proporciona informacion acerca de la url de la vista que se esta renderizando (VIDEO 626)
-                // proyecto -> objeto JS cuyas propiedades son los parametros de la query de una peticion GET (VIDEO 626)
+                // const proyecto -> objeto JS cuyas propiedades son los parametros de la query de una peticion GET (VIDEO 626)
                 const proyectoParams = new URLSearchParams(window.location.search);
                 const proyecto = Object.fromEntries(proyectoParams.entries());
                 return proyecto.id;

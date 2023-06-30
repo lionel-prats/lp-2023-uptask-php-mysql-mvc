@@ -20,13 +20,24 @@ class TareaController {
                     'mensaje' => 'Hubo un Error al agregar la tarea'
                 ];
                 echo json_encode($respuesta);
-            } else {
+                return;
+            } /* else {
                 $respuesta = [
                     'tipo' => 'exito',
                     'mensaje' => 'Tarea agregada correctamente'
                 ];
                 echo json_encode($respuesta);
-            }
+            } */
+            
+            $tarea = new Tarea($_POST);
+            $tarea->proyectoId = $proyecto->id;
+            $resultado = $tarea->guardar();
+            $respuesta = [
+                'tipo' => 'exito',
+                'id' => $resultado['id'],
+                'mensaje' => 'Tarea creada correctamente'
+            ];
+            echo json_encode($respuesta);
         }
     }
     
