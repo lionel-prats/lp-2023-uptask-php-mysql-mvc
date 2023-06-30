@@ -11,8 +11,12 @@ class TareaController {
     }
     
     public static function crear() {
-        $tarea = new Tarea($_POST);
-        echo json_encode($tarea);
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+            $respuesta = [
+                'proyectoId' => $_POST['proyectoId']
+            ];
+            echo json_encode($respuesta);
+        }
     }
     
     public static function actualizar() {

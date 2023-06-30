@@ -76,15 +76,14 @@
             
             // Fetch al servidor para agregar una tarea a la tabla tareas
             async function agregarTarea(tarea){
-                // const {id, fecha, hora, servicios} = cita;
-                
-                // const arrayIdServicios = servicios.map( servicio => servicio.id)
-                
+
+                // identificador del proyecto al cual le vamos a agrregar una tarea (tabla "tareas", campo "url")
+                proyecto = obtenerProyecto();
+
                 const datos = new FormData(); // objeto nativo de JS para enviar datos al servidor (VIDEO 517)
                 datos.append('nombre', tarea);
-                datos.append('estado', 1);
-                datos.append('proyectoId', 75);
-            
+                datos.append('proyectoId', proyecto);
+
                 try {
                     const url = 'http://localhost:3000/api/tarea';
                     const respuesta = await fetch(url, {
@@ -98,6 +97,14 @@
                 } catch (error) {
                     console.log(error);
                 }
+            }
+
+            function obtenerProyecto(){
+                // window.location nos proporciona informacion acerca de la url de la vista que se esta renderizando (VIDEO 626)
+                // proyecto -> objeto JS cuyas propiedades son los parametros de la query de una peticion GET (VIDEO 626)
+                const proyectoParams = new URLSearchParams(window.location.search);
+                const proyecto = Object.fromEntries(proyectoParams.entries());
+                return proyecto.id;
             }
         })        
     }

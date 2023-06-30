@@ -192,6 +192,29 @@ CREATE TABLE tareas (
   FOREIGN KEY (proyectoId) REFERENCES proyectos(id) ON DELETE CASCADE
 );
 
+----- 
 
+VIDEO 626
 
+Del lado del cliente, en JavaScript: 
 
+- window.location -> nos proporciona informacion acerca de la url de la vista que se esta renderizando
+
+----- 
+
+- De la siguiente forma, en la constante proyecto generamos un objeto cuyas propiedades son los parametros que llegan por URL en una peticion vvv
+
+----- 
+
+const proyectoParams = new URLSearchParams(window.location.search);
+const proyecto = Object.fromEntries(proyectoParams.entries());
+
+-----
+
+Ejemplo: http://localhost:3000/proyecto?id=5cd20915df05da4d3c4a64c2719f0b7a&mono=rojo;
+const proyectoParams = new URLSearchParams(window.location.search);
+const proyecto = Object.fromEntries(proyectoParams.entries());
+proyecto = {
+  id: "5cd20915df05da4d3c4a64c2719f0b7a",
+  mono: "rojo"
+} 
