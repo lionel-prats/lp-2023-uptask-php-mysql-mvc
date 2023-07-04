@@ -66,3 +66,5 @@ Cuando clonas el mismo repositorio en tu PC personal, puedes repetir el paso 2 p
 Recuerda que al hacer cambios en un repositorio en una computadora, al clonarlo en la otra, es posible que debas realizar una sincronización (git pull) para asegurarte de tener la versión más reciente del repositorio antes de realizar tus cambios locales.
 
 -----
+
+Push desde la PC del trabajo
