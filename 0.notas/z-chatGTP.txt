@@ -1,0 +1,68 @@
+* como trabajar en un repo remoto desde 2 computadoras distintas con el mismo usuario? 
+
+PREGUNTA: 
+
+tengo un proyecto subido a github
+necesito lo siguiente:
+lo quiero clonar en mi pc del tranajo, pero con la posibilidad de subir cambios desde ahi.
+es decir, poder trabajar con el mismo proyecto, tanto desde la web de mi casa como desde la web del trabajo (pullear desde el repo, pushear desde cualquiera de las dos computadoras, etc.)
+ah, en las 2 pc quiero manejarme con el mismo usuario de github, es decir, el mio personal
+como se hace?
+
+RESPUESTA:
+
+Para trabajar en el mismo proyecto desde diferentes computadoras y mantener la posibilidad de hacer pull y push desde ambas, sigue los siguientes pasos:
+
+1) Clonar el repositorio: En tu computadora de trabajo, abre una terminal y navega al directorio donde deseas clonar el proyecto. Luego, utiliza el siguiente comando para clonar el repositorio en tu PC:
+    git clone <URL_DEL_REPOSITORIO>
+Reemplaza <URL_DEL_REPOSITORIO> por la URL del repositorio de GitHub que deseas clonar. Puedes obtenerla haciendo clic en el botón verde "Code" en la página del repositorio y copiando la URL que aparece.
+
+2) Configurar el usuario de Git: Abre una terminal y ejecuta los siguientes comandos para configurar tu nombre de usuario y correo electrónico en Git:
+    git config --global user.name "Tu Nombre"
+    git config --global user.email "tu_correo@example.com"
+
+Asegúrate de usar el mismo nombre de usuario y correo electrónico asociados a tu cuenta de GitHub.
+
+3) Trabajar en el proyecto: Ahora puedes trabajar en el proyecto en tu computadora de trabajo. Realiza cambios en los archivos, crea nuevas ramas, etc.
+
+4) Hacer commit y push de los cambios: Cuando hayas realizado cambios y desees subirlos al repositorio de GitHub, sigue estos pasos:
+
+Abre una terminal y navega al directorio del repositorio clonado.
+Ejecuta git status para ver los cambios realizados.
+Utiliza git add <nombre_del_archivo> para agregar archivos específicos o git add . para agregar todos los archivos modificados.
+Luego, ejecuta git commit -m "Mensaje del commit" para confirmar los cambios.
+Finalmente, utiliza git push para enviar los cambios al repositorio remoto en GitHub. Se te pedirá que ingreses tus credenciales de GitHub (nombre de usuario y contraseña).
+Ahora, cuando llegues a casa, puedes clonar el mismo repositorio en tu PC personal siguiendo los pasos 1 y 2. Una vez hecho esto, podrás hacer pull de los cambios desde el repositorio remoto en GitHub y realizar push desde ambas computadoras sin problemas.
+
+Recuerda que es importante realizar pull antes de comenzar a trabajar en el proyecto desde cada computadora para asegurarte de tener la versión más reciente y evitar conflictos.
+
+PREGUNTA: 
+
+git config --global user.name "Tu Nombre"
+git config --global user.email "tu_correo@example.com"
+
+no quiero configurar mi usuario de manera global en la computadora del trabajo. Me gusta configurar el usuario de un repo local por proyecto. como hago?
+
+RESPUESTA:
+
+1) Entendido. Si prefieres configurar el usuario de Git de manera local por proyecto en lugar de hacerlo globalmente en tu computadora de trabajo, puedes seguir estos pasos:
+
+Clonar el repositorio: En tu computadora de trabajo, abre una terminal y navega al directorio donde deseas clonar el proyecto. Luego, utiliza el siguiente comando para clonar el repositorio en tu PC:
+    git clone <URL_DEL_REPOSITORIO>
+Reemplaza <URL_DEL_REPOSITORIO> por la URL del repositorio de GitHub que deseas clonar.
+
+2) Configurar el usuario de Git localmente: Navega al directorio del repositorio clonado utilizando cd <directorio_del_repositorio> y luego ejecuta los siguientes comandos:
+    git config user.name "Tu Nombre"
+    git config user.email "tu_correo@example.com"
+
+Asegúrate de reemplazar "Tu Nombre" con tu nombre de usuario y "tu_correo@example.com" con tu dirección de correo electrónico asociada a tu cuenta de GitHub.
+
+Estos comandos configurarán el usuario de Git específicamente para este repositorio local, sin afectar la configuración global en tu computadora de trabajo.
+
+Ahora puedes trabajar en el proyecto en tu computadora de trabajo, realizar cambios, hacer commit y push como de costumbre. El usuario configurado localmente se utilizará para todos los commits en este repositorio en particular.
+
+Cuando clonas el mismo repositorio en tu PC personal, puedes repetir el paso 2 para configurar el usuario localmente en ese repositorio también.
+
+Recuerda que al hacer cambios en un repositorio en una computadora, al clonarlo en la otra, es posible que debas realizar una sincronización (git pull) para asegurarte de tener la versión más reciente del repositorio antes de realizar tus cambios locales.
+
+-----

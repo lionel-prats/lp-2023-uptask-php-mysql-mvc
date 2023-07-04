@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 VIDEO 583
 
-comando para reiniciar el AUTOINCREMENT de id de usuarios
+comando para reiniciar reinicializar resetear el AUTOINCREMENT de id de usuarios (PRIMARY KEY PK)
 ALTER TABLE usuarios AUTO_INCREMENT = 1;
 
 ----- 
