@@ -1,9 +1,26 @@
 // IIFE -> Inmediately Invoke Function Expression (VIDEO 615)
 (function() {
+
+    obtenerTareas(); // consumir /api/tareas (VIDEO 630)
     // boton para mostrar la Ventana Modal para agregar una tarea 
     const nuevaTareaBtn = document.querySelector('#agregar-tarea');
     nuevaTareaBtn.addEventListener('click', mostrarFormulario);
 
+    async function obtenerTareas(){
+        try {
+            const id = obtenerProyecto();
+            const url = `/api/tareas?id=${id}`
+            const respuesta = await fetch(url)
+            const resultado = await respuesta.json()
+            const {tareas} = resultado
+            mostrarTareas(tareas)
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    function mostrarTareas(tareas){
+        console.log("mostrando", tareas);
+    }
     function mostrarFormulario(){
         const modal = document.createElement('DIV');
         modal.classList.add('modal');
@@ -59,61 +76,59 @@
                 }
                 agregarTarea(tarea);
             }
-            // muestra un mensaje en la interfaz (VIDEO 621)
-            function mostrarAlerta(mensaje, tipo, referencia){
-                const alertaPrevia = document.querySelector('.alerta')
-                if(alertaPrevia)
-                    alertaPrevia.remove();
-                const alerta = document.createElement('DIV');
-                alerta.classList.add('alerta', tipo);
-                alerta.textContent = mensaje;
+        })        
+    }
+    // muestra un mensaje en la interfaz (VIDEO 621)
+    function mostrarAlerta(mensaje, tipo, referencia){
+        const alertaPrevia = document.querySelector('.alerta')
+        if(alertaPrevia)
+            alertaPrevia.remove();
+        const alerta = document.createElement('DIV');
+        alerta.classList.add('alerta', tipo);
+        alerta.textContent = mensaje;
+        setTimeout(() => {
+            referencia.parentElement.insertBefore(alerta, referencia.nextElementSibling)
+        }, 30);
+        // referencia.insertAdjacentElement('afterend', alerta);
+        // referencia.parentElement.insertBefore(alerta, referencia);
+    }
+    // Fetch al servidor para agregar una tarea a la tabla tareas
+    async function agregarTarea(tarea){
+
+        // identificador del proyecto al cual le vamos a agrregar una tarea (tabla "proyectos", campo "url")
+        proyecto = obtenerProyecto();
+
+        const datos = new FormData(); // objeto nativo de JS para enviar datos al servidor (VIDEO 517)
+        datos.append('nombre', tarea);
+        datos.append('proyectoId', proyecto);
+
+        try {
+            const url = 'http://localhost:3000/api/tarea';
+            const respuesta = await fetch(url, {
+                method: 'POST',
+                body: datos
+            });
+            const resultado = await respuesta.json();
+
+            const legendFormCrearTarea = document.querySelector('.formulario legend');
+            mostrarAlerta(resultado.mensaje, resultado.tipo, legendFormCrearTarea);
+
+            if(resultado.tipo === 'exito'){
+                document.querySelector('.submit-nueva-tarea').disabled = true;
                 setTimeout(() => {
-                    referencia.parentElement.insertBefore(alerta, referencia.nextElementSibling)
-                }, 30);
-                // referencia.insertAdjacentElement('afterend', alerta);
-                // referencia.parentElement.insertBefore(alerta, referencia);
+                    modal.remove();
+                }, 3000);
             }
             
-            // Fetch al servidor para agregar una tarea a la tabla tareas
-            async function agregarTarea(tarea){
-
-                // identificador del proyecto al cual le vamos a agrregar una tarea (tabla "proyectos", campo "url")
-                proyecto = obtenerProyecto();
-
-                const datos = new FormData(); // objeto nativo de JS para enviar datos al servidor (VIDEO 517)
-                datos.append('nombre', tarea);
-                datos.append('proyectoId', proyecto);
-
-                try {
-                    const url = 'http://localhost:3000/api/tarea';
-                    const respuesta = await fetch(url, {
-                        method: 'POST',
-                        body: datos
-                    });
-                    const resultado = await respuesta.json();
-
-                    const legendFormCrearTarea = document.querySelector('.formulario legend');
-                    mostrarAlerta(resultado.mensaje, resultado.tipo, legendFormCrearTarea);
-
-                    if(resultado.tipo === 'exito'){
-                        document.querySelector('.submit-nueva-tarea').disabled = true;
-                        setTimeout(() => {
-                            modal.remove();
-                        }, 3000);
-                    }
-                    
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-
-            function obtenerProyecto(){
-                // window.location nos proporciona informacion acerca de la url de la vista que se esta renderizando (VIDEO 626)
-                // const proyecto -> objeto JS cuyas propiedades son los parametros de la query de una peticion GET (VIDEO 626)
-                const proyectoParams = new URLSearchParams(window.location.search);
-                const proyecto = Object.fromEntries(proyectoParams.entries());
-                return proyecto.id;
-            }
-        })        
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    function obtenerProyecto(){
+        // window.location nos proporciona informacion acerca de la url de la vista que se esta renderizando (VIDEO 626)
+        // const proyecto -> objeto JS cuyas propiedades son los parametros de la query de una peticion GET (VIDEO 626)
+        const proyectoParams = new URLSearchParams(window.location.search);
+        const proyecto = Object.fromEntries(proyectoParams.entries());
+        return proyecto.id;
     }
 })();
