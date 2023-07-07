@@ -9,6 +9,7 @@
     };
     .principal {
         flex: 1;
+        overflow: scroll; // VIDEO 634 - con esto logro en la vista de un proyecto que quede fijo el sidebar de la izquierda y que se genere un scroll en la columna central si las tareas de un proyecto sobrepasan el alto de la pantalla (ya que .dashboard tiene un height de 100vh)
     }
 
     .contenido {

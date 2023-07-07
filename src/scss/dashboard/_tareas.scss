@@ -8,3 +8,55 @@
         @include m.boton(v.$cyan, v.$blanco);
     }
 }
+
+.listado-tareas {
+    padding: 0;
+    margin-top: 3rem;
+    list-style: none;
+    .no-tareas {
+        text-align: center;
+    }
+}
+
+.tarea {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid darken(v.$grisClaro, 5%);
+    &:last-of-type { // selecciono el ultimo elemento de un grupo de hermanos
+        border-bottom: none;
+    }
+    p {
+        font-size: 1.4rem;
+    }
+    .opciones {
+        gap: 1rem;
+        display: flex;
+        button {
+            padding: .5rem 1rem;
+            border: none;
+            border-radius: 1rem;
+            font-size: .9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+
+            &:hover{
+                cursor: pointer;
+            }
+        }
+        .completa {
+            background-color: v.$azul;
+            color: v.$blanco;
+        }
+        .pendiente {
+            background-color: v.$naranja;
+            color: v.$blanco;
+        }
+        .eliminar-tarea {
+            background-color: v.$rojo;
+            color: v.$blanco;
+        }
+    }
+}

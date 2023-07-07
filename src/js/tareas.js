@@ -139,7 +139,6 @@
     }
     // Fetch al servidor para agregar una tarea a la tabla tareas
     async function agregarTarea(tarea){
-
         // identificador del proyecto al cual le vamos a agrregar una tarea (tabla "proyectos", campo "url")
         proyecto = obtenerProyecto();
 
