@@ -2,9 +2,11 @@
 (function() {
 
     obtenerTareas(); // consumir /api/tareas (VIDEO 630)
+
     // boton para mostrar la Ventana Modal para agregar una tarea 
     const nuevaTareaBtn = document.querySelector('#agregar-tarea');
     nuevaTareaBtn.addEventListener('click', mostrarFormulario);
+    
     async function obtenerTareas(){
         try {
             const id = obtenerProyecto();
@@ -26,7 +28,12 @@
             contenedorTareas.appendChild(textoNoTareas)
             return
         }
+        const estados = {
+            0: "Pendiente",
+            1: "Completa"
+        }
         tareas.forEach( tarea => {
+            console.log(tarea);
             const contenedorTarea = document.createElement("LI")
             contenedorTarea.dataset.tareaId = tarea.id
             contenedorTarea.classList.add("tarea");
@@ -34,8 +41,19 @@
             const nombreTarea = document.createElement("P");
             nombreTarea.textContent = tarea.nombre;
 
-            console.log(contenedorTarea);
-            console.log(nombreTarea);
+            const opcionesDiv = document.createElement("DIV");
+            opcionesDiv.classList.add("opciones");
+
+            // botones 
+            const btnEstadoTarea = document.createElement("BUTTON");
+            btnEstadoTarea.classList.add("estado-tarea");
+            btnEstadoTarea.classList.add(`${estados[tarea.estado].toLowerCase()}`);
+            btnEstadoTarea.textContent = estados[tarea.estado];
+            btnEstadoTarea.dataset.estadoTarea = tarea.estado;
+            
+            // console.log(contenedorTarea);
+            // console.log(nombreTarea);
+            console.log(btnEstadoTarea);
         })
     }
     function mostrarFormulario(){
