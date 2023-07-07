@@ -19,6 +19,7 @@
             console.log(error);
         }
     }
+    // la funcion mostrarTareas renderiza las tareas de un pproyecto en http://localhost:3000/proyecto?id=xxx
     function mostrarTareas(tareas){
         if(tareas.length === 0){
             const contenedorTareas = document.querySelector("#listado-tareas")
@@ -33,7 +34,7 @@
             1: "Completa"
         }
         tareas.forEach( tarea => {
-            console.log(tarea);
+            //console.log(tarea);
             const contenedorTarea = document.createElement("LI")
             contenedorTarea.dataset.tareaId = tarea.id
             contenedorTarea.classList.add("tarea");
@@ -51,9 +52,18 @@
             btnEstadoTarea.textContent = estados[tarea.estado];
             btnEstadoTarea.dataset.estadoTarea = tarea.estado;
             
-            // console.log(contenedorTarea);
-            // console.log(nombreTarea);
-            console.log(btnEstadoTarea);
+            const btnEliminarTarea = document.createElement("BUTTON");
+            btnEliminarTarea.classList.add("eliminar-tarea");
+            btnEliminarTarea.dataset.idTarea = tarea.id;
+            btnEliminarTarea.textContent = "Eliminar";
+            
+            opcionesDiv.appendChild(btnEstadoTarea);
+            opcionesDiv.appendChild(btnEliminarTarea);
+            contenedorTarea.appendChild(nombreTarea);
+            contenedorTarea.appendChild(opcionesDiv);
+            
+            const listadoTareas = document.querySelector("#listado-tareas");
+            listadoTareas.appendChild(contenedorTarea);
         })
     }
     function mostrarFormulario(){
