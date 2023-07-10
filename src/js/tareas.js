@@ -19,7 +19,7 @@
             console.log(error);
         }
     }
-    // la funcion mostrarTareas renderiza las tareas de un pproyecto en http://localhost:3000/proyecto?id=xxx
+    // la funcion mostrarTareas renderiza las tareas de un proyecto en http://localhost:3000/proyecto?id=xxx
     function mostrarTareas(tareas){
         if(tareas.length === 0){
             const contenedorTareas = document.querySelector("#listado-tareas")
@@ -34,7 +34,7 @@
             1: "Completa"
         }
         tareas.forEach( tarea => {
-            //console.log(tarea);
+            // console.log(tarea);
             const contenedorTarea = document.createElement("LI")
             contenedorTarea.dataset.tareaId = tarea.id
             contenedorTarea.classList.add("tarea");
@@ -160,7 +160,8 @@
             if(resultado.tipo === 'exito'){
                 document.querySelector('.submit-nueva-tarea').disabled = true;
                 setTimeout(() => {
-                    modal.remove();
+                    //modal.remove();
+                    window.location.reload(); // metodo JS para recargar la pagina en la que nos encontramos (VIDEO 636)
                 }, 3000);
             }
             

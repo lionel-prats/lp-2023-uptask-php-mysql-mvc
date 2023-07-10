@@ -1,6 +1,7 @@
 node_modules/
 vendor/
 public/build/
+0.PDFs/
 
 .env
 package-lock.json

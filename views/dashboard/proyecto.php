@@ -9,6 +9,8 @@
     </div>
     <ul id="listado-tareas" class="listado-tareas">
         <!-- 
+        * Ejemplo de los <li> correspondientes a cada tarea (VIDEO 634)
+        * el <ul> se completa desde tareas.js, donde se hace un fetch al servidor para traer los datos, y se inyectan al HTML con scripting (VIDEO 634)
         <li data-tarea-id="11" class="tarea">
             <p>Jumbo</p>
             <div class="opciones">
