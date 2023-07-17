@@ -218,3 +218,21 @@ proyecto = {
   id: "5cd20915df05da4d3c4a64c2719f0b7a",
   mono: "rojo"
 } 
+
+----- 
+
+VIDEO 637 
+
+VIRTUAL DOM 
+
+1) Ni bien se carga /src/js/tareas.js, define la variable global tareas para que esté disponible en todo el código javascript vvv
+
+let tareas
+
+* esta variable, va a contener el listado de tareas que viene del fetch al server, y que se van a renderizar en la vista de un proyecto
+* luego de que se crea una tarea, dentro de la misma funcion agregarTarea(), creo un objeto js con el formato de los objetos de la variable tarea, y añado este objeto a la lista de objetos ya cargados en tarea.
+* luego, ejecuto nuevamente mostrarTareas() para que se renderize el listado de tareas actualizado, sin refrescar la pagina, y ejecutando antes del nuevo renderizado la funcion limpiarTareas() (creada en este video), para "vaciar" el <ul id="listado-tareas">, que es quien contiene los <li> con las tareas de un proyecto.
+
+*** me acaba de caer la ficha, de que tareas, pese a que ya termino de renderizarse la pagina, sigue guardando en memoria el listado de tareas, y por eso puedo reutilizar la variable luego de crear una nueva tarea, para actualizar el DOM (Domingo 16/7/23) 
+
+-----

@@ -2,6 +2,7 @@
 (function() {
 
     obtenerTareas(); // consumir /api/tareas (VIDEO 630)
+    let tareas = []; // ver apartado del VIDEO 637 en 4-lp-2023-uptask-php-mysql-mvc.txt 
 
     // boton para mostrar la Ventana Modal para agregar una tarea 
     const nuevaTareaBtn = document.querySelector('#agregar-tarea');
@@ -13,14 +14,18 @@
             const url = `/api/tareas?id=${id}`
             const respuesta = await fetch(url)
             const resultado = await respuesta.json()
-            const {tareas} = resultado
-            mostrarTareas(tareas)
+
+            // const {tareas} = resultado
+            tareas = resultado.tareas; // VIDEO 637
+            
+            mostrarTareas(/* tareas */)
         } catch (error) {
             console.log(error);
         }
     }
     // la funcion mostrarTareas renderiza las tareas de un proyecto en http://localhost:3000/proyecto?id=xxx
-    function mostrarTareas(tareas){
+    function mostrarTareas(/* tareas */){
+        limpiarTareas();
         if(tareas.length === 0){
             const contenedorTareas = document.querySelector("#listado-tareas")
             const textoNoTareas = document.createElement("LI")
@@ -153,16 +158,31 @@
                 body: datos
             });
             const resultado = await respuesta.json();
-
             const legendFormCrearTarea = document.querySelector('.formulario legend');
             mostrarAlerta(resultado.mensaje, resultado.tipo, legendFormCrearTarea);
+            
 
             if(resultado.tipo === 'exito'){
                 document.querySelector('.submit-nueva-tarea').disabled = true;
+                const formulario = document.querySelector('.formulario');
+                const modal = document.querySelector('.modal');
                 setTimeout(() => {
-                    //modal.remove();
-                    window.location.reload(); // metodo JS para recargar la pagina en la que nos encontramos (VIDEO 636)
+                    formulario.classList.add('cerrar');
+                }, 2500);
+                setTimeout(() => {
+                    modal.remove();
+                    // window.location.reload(); // metodo JS para recargar la pagina en la que nos encontramos (VIDEO 636)
                 }, 3000);
+
+                // agregar el objeto de la tarea creada, al global de tareas (VIDEO 637)
+                const tareaObj = {
+                    id: String(resultado.id),
+                    nombre: tarea,
+                    estado: "0",
+                    proyectoId: resultado.proyectoId
+                }
+                tareas = [...tareas, tareaObj];
+                mostrarTareas();
             }
             
         } catch (error) {
@@ -175,5 +195,13 @@
         const proyectoParams = new URLSearchParams(window.location.search);
         const proyecto = Object.fromEntries(proyectoParams.entries());
         return proyecto.id;
+    }
+    function limpiarTareas(){
+        const listadoTareas = document.querySelector("#listado-tareas");
+        // VIDEO 637 - de esta manera, es mas rapido limpiar de elementos hijo de <ul id="listado-tareas"> en el DOM, que usando innerHTML
+        while(listadoTareas.firstChild)
+            // listadoTareas.firstChild.remove();
+            listadoTareas.removeChild(listadoTareas.firstChild);
+        // listadoTareas.innerHTML = "";
     }
 })();

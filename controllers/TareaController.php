@@ -35,7 +35,8 @@ class TareaController {
             $respuesta = [
                 'tipo' => 'exito',
                 'id' => $resultado['id'],
-                'mensaje' => 'Tarea creada correctamente'
+                'mensaje' => 'Tarea creada correctamente',
+                "proyectoId" => $proyecto->id // para poder utilizar el VIRTUAL DOM - VIDEO 637
             ];
             echo json_encode($respuesta);
         }
