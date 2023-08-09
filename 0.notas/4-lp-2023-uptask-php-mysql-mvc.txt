@@ -246,3 +246,16 @@ btnEstadoTarea.ondblclick = function() {
 }
 
 * de esta forma, a un elemento HTML creado con scripting, le agrego un listener "doble click" (si reviso el HTML en la consola del navegador no se visualiza)
+
+-----
+
+VIDEO 639 
+
+* Forma de visualizar por consola la info que quiero enviar al servidor construyendo un FormData vvv
+
+const datos = new FormData(); 
+datos.append('id', id);
+datos.append('nombre', nombre);
+for (let valor of datos.values()){
+    console.log(valor);
+}
