@@ -212,7 +212,7 @@
         }
     }
     
-    function cambiarEstadoTarea(tarea) {
+    function cambiarEstadoTarea(tarea) { // recibe una copia identica del objeto-tarea iterado en la renderizacion de las tareas (mostrarTareas())
         const nuevoEstado = tarea.estado === "1" ? "0" : "1";
         tarea.estado = nuevoEstado
         actualizarTarea(tarea)
@@ -232,7 +232,14 @@
                 body: datos
             });
             const resultado = await respuesta.json();
-            console.log(resultado);
+            console.log(resultado.respuesta);
+            if(resultado.respuesta.tipo === "exito") {
+                const legendFormCrearTarea = document.querySelector('.contenedor-nueva-tarea');
+                const {mensaje, tipo} = resultado.respuesta
+                console.log(mensaje);
+                console.log(tipo);
+                mostrarAlerta(mensaje, tipo, legendFormCrearTarea)
+            }
             
         } catch (error) {
             console.log(error);
