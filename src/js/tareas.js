@@ -2,30 +2,37 @@
 (function() {
 
     obtenerTareas(); // consumir /api/tareas (VIDEO 630)
+
+    // array que va a tener el listado de tareas asociadas a un proyecto (cada tarea es un objeto que viene de la peticion a /api/tareas?id=xxx), y que se va a actualizar cada vez que el usuario agregue una nueva tarea (nos evitamos peticiones al SERVER) // VIDEO 637
     let tareas = []; // ver apartado del VIDEO 637 en 4-lp-2023-uptask-php-mysql-mvc.txt 
 
     // boton para mostrar la Ventana Modal para agregar una tarea 
     const nuevaTareaBtn = document.querySelector('#agregar-tarea');
+    
+    // quedo escuchando por un click en el boton de crear nueva tarea, en la vista de un proyecto
     nuevaTareaBtn.addEventListener('click', mostrarFormulario);
     
     async function obtenerTareas(){
         try {
-            const id = obtenerProyecto();
+            const id = obtenerProyecto(); // token del proyecto, sacado de la URL de la vista
             const url = `/api/tareas?id=${id}`
             const respuesta = await fetch(url)
             const resultado = await respuesta.json()
 
             // const {tareas} = resultado
-            tareas = resultado.tareas; // VIDEO 637
-            
-            mostrarTareas(/* tareas */)
+            tareas = resultado.tareas; // VIDEO 637}
+
+            console.log(tareas);
+
+            mostrarTareas()
+
         } catch (error) {
             console.log(error);
         }
     }
     // la funcion mostrarTareas renderiza las tareas de un proyecto en http://localhost:3000/proyecto?id=xxx
-    function mostrarTareas(/* tareas */){
-        limpiarTareas();
+    function mostrarTareas(){
+        limpiarTareas(); // vacío el <ul id="listado-tareas" class="listado-tareas">, contenedor de todas las tareas asociadas a un proyecto, para renderizarlas nuevamente con la posible actualizacion de una nueva tarea creada por el usuario
         if(tareas.length === 0){
             const contenedorTareas = document.querySelector("#listado-tareas")
             const textoNoTareas = document.createElement("LI")
@@ -50,13 +57,17 @@
             const opcionesDiv = document.createElement("DIV");
             opcionesDiv.classList.add("opciones");
 
-            // botones 
+            // botones
             const btnEstadoTarea = document.createElement("BUTTON");
             btnEstadoTarea.classList.add("estado-tarea");
             btnEstadoTarea.classList.add(`${estados[tarea.estado].toLowerCase()}`);
             btnEstadoTarea.textContent = estados[tarea.estado];
             btnEstadoTarea.dataset.estadoTarea = tarea.estado;
+            btnEstadoTarea.ondblclick = function() {
+                cambiarEstadoTarea({...tarea}) // le paso un objeto-copia identico al de la tarea iterada, para que al cambiar su estado en cambiarEstadoTarea(), no mute el array de tareas original (VIDEO 638)
+            }
             
+            // boton de eliminar tarea
             const btnEliminarTarea = document.createElement("BUTTON");
             btnEliminarTarea.classList.add("eliminar-tarea");
             btnEliminarTarea.dataset.idTarea = tarea.id;
@@ -118,13 +129,13 @@
                 submitFormularioNuevaTarea();
             }
             function submitFormularioNuevaTarea(){
-                const tarea = document.querySelector('#tarea').value.trim();
+                const tarea = document.querySelector('#tarea').value.trim(); // value del input en el formulario modal de creacion de nueva tarea
                 if(tarea === '') {
                     const legendFormCrearTarea = document.querySelector('.formulario legend');
                     mostrarAlerta('El nombre de la tarea es obligatorio', 'error', legendFormCrearTarea);
                     return;
                 }
-                agregarTarea(tarea);
+                agregarTarea(tarea); // ejecutamos la funcion que hara un CREATE en tareas
             }
         })        
     }
@@ -145,11 +156,18 @@
     // Fetch al servidor para agregar una tarea a la tabla tareas
     async function agregarTarea(tarea){
         // identificador del proyecto al cual le vamos a agrregar una tarea (tabla "proyectos", campo "url")
-        proyecto = obtenerProyecto();
+        proyecto = obtenerProyecto(); // esta funcion me retorna el token (esta en la URL de la vista del proyecto) en la DB del proyecto para el cual quiero agregar una tarea nueva
 
         const datos = new FormData(); // objeto nativo de JS para enviar datos al servidor (VIDEO 517)
         datos.append('nombre', tarea);
         datos.append('proyectoId', proyecto);
+
+        /* 
+        datos = {
+            nombre: "el_nombre_que_el_usuario_le_dio_a_la_tarea"
+            proyectoId = "42f4716f6313dbde3732c555198c7dd3"
+        } 
+        */
 
         try {
             const url = 'http://localhost:3000/api/tarea';
@@ -161,7 +179,6 @@
             const legendFormCrearTarea = document.querySelector('.formulario legend');
             mostrarAlerta(resultado.mensaje, resultado.tipo, legendFormCrearTarea);
             
-
             if(resultado.tipo === 'exito'){
                 document.querySelector('.submit-nueva-tarea').disabled = true;
                 const formulario = document.querySelector('.formulario');
@@ -176,12 +193,17 @@
 
                 // agregar el objeto de la tarea creada, al global de tareas (VIDEO 637)
                 const tareaObj = {
-                    id: String(resultado.id),
+                    id: String(resultado.id), // convierto un number en string
                     nombre: tarea,
                     estado: "0",
                     proyectoId: resultado.proyectoId
                 }
+                // una forma de agregar un nuevo objeto al array de tareas (VIDEO 637)
                 tareas = [...tareas, tareaObj];
+                
+                console.clear()
+                console.log(tareas);
+                
                 mostrarTareas();
             }
             
@@ -189,12 +211,23 @@
             console.log(error);
         }
     }
+    
+    function cambiarEstadoTarea(tarea) {
+        const nuevoEstado = tarea.estado === "1" ? "0" : "1";
+        tarea.estado = nuevoEstado
+        actualizarTarea(tarea)
+    }
+
+    function actualizarTarea(tarea) {
+        console.log(tarea);
+    }
+
     function obtenerProyecto(){
         // window.location nos proporciona informacion acerca de la url de la vista que se esta renderizando (VIDEO 626)
-        // const proyecto -> objeto JS cuyas propiedades son los parametros de la query de una peticion GET (VIDEO 626)
         const proyectoParams = new URLSearchParams(window.location.search);
+        // proyecto -> objeto JS cuyas propiedades son los parametros de la query de una peticion GET (VIDEO 626)
         const proyecto = Object.fromEntries(proyectoParams.entries());
-        return proyecto.id;
+        return proyecto.id; 
     }
     function limpiarTareas(){
         const listadoTareas = document.querySelector("#listado-tareas");

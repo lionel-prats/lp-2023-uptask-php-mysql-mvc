@@ -36,7 +36,7 @@ class DashboardController {
     }
     public static function proyecto(Router $router) {
         isAuth();
-        $token = s($_GET['id']);
+        $token = s($_GET['id']); // token (campo url en la tabla proyectos) del proyecto 
         if(!$token)
             header('Location: /dashboard');
         $proyecto = Proyecto::where('url', $token); 

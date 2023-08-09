@@ -225,7 +225,7 @@ VIDEO 637
 
 VIRTUAL DOM 
 
-1) Ni bien se carga /src/js/tareas.js, define la variable global tareas para que esté disponible en todo el código javascript vvv
+1) Ni bien se carga /src/js/tareas.js (con la carga de /proyecto), define la variable global tareas para que esté disponible en todo el código javascript vvv
 
 let tareas
 
@@ -236,3 +236,13 @@ let tareas
 *** me acaba de caer la ficha, de que tareas, pese a que ya termino de renderizarse la pagina, sigue guardando en memoria el listado de tareas, y por eso puedo reutilizar la variable luego de crear una nueva tarea, para actualizar el DOM (Domingo 16/7/23) 
 
 -----
+
+VIDEO 638 
+
+/src/js/tareas.js vvv 
+
+btnEstadoTarea.ondblclick = function() {
+    cambiarEstadoTarea(tarea)
+}
+
+* de esta forma, a un elemento HTML creado con scripting, le agrego un listener "doble click" (si reviso el HTML en la consola del navegador no se visualiza)
