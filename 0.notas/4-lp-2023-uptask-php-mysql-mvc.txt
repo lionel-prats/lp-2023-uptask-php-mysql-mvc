@@ -273,3 +273,12 @@ Instalamos Sweet Alert via CDN
 
 documentacion vvv
 https://sweetalert2.github.io/
+
+-----
+
+VIDEO 643
+
+Use la libreria Animate.css combinada con SweetAlert para tener una ventana de alerta animada 
+
+documentacion Animate.css vvv 
+https://animate.style/

@@ -272,12 +272,59 @@
     }
 
     async function eliminarTarea(tarea) {
-        console.log(tarea);
-        const datos = new FormData();
+        const {id, nombre, estado} = tarea
+        const datos = new FormData(); 
+        datos.append('id', id);
+        datos.append('nombre', nombre);
+        datos.append('estado', estado);
+        datos.append('proyectoId', obtenerProyecto()); // queryString "id" en /proyecto?id=xxx
+
         try {
+            const url = 'http://localhost:3000/api/tarea/eliminar';
+            const respuesta = await fetch(url, {
+                method: 'POST',
+                body: datos
+            });
+            // console.log(respuesta); // impresion por consola para verificar que el frontend se esta conectando correctamente con el backendd
+
+            const resultado = await respuesta.json();
+
+            console.log(resultado);
+            // resultado = [{
+            //     resultado: TRUE/FALSE,
+            //     mensaje: "Eliminado correctamente"
+            //     tipo: "exito"
+            // }]
             
+            if(resultado.resultado) {
+
+                // ALTERNATIVA 1 DE ALERTA DE BORRADO EXITOSO
+                // Swal.fire({
+                //     title: resultado.mensaje,
+                //     showClass: {
+                //         popup: 'animate__animated animate__fadeInDown'
+                //     },
+                //     hideClass: {
+                //         popup: 'animate__animated animate__fadeOutUp'
+                //     }
+                // })
+
+                // ALTERNATIVA 2 DE ALERTA DE BORRADO EXITOSO
+                // mostrarAlerta(
+                //     resultado.mensaje,
+                //     resultado.tipo,
+                //     document.querySelector('.contenedor-nueva-tarea')
+                // )
+
+                Swal.fire("Ok", resultado.mensaje, "success")
+
+                // elimino del objeto en memoria la tarea eliminada fisicamente de la DB y actualizo el DOM (VIDEO 642) vvv
+                tareas = tareas.filter( tareaMemoria => tareaMemoria.id !== id) 
+                mostrarTareas()
+            
+            }
         } catch (error) {
-            
+            console.log(error)
         }
     }
 
