@@ -22,7 +22,7 @@
             // const {tareas} = resultado
             tareas = resultado.tareas; // VIDEO 637}
 
-            console.log(tareas);
+            //console.log(tareas);
 
             mostrarTareas()
 
@@ -64,7 +64,7 @@
             btnEstadoTarea.textContent = estados[tarea.estado];
             btnEstadoTarea.dataset.estadoTarea = tarea.estado;
             btnEstadoTarea.ondblclick = function() {
-                cambiarEstadoTarea({...tarea}) // le paso un objeto-copia identico al de la tarea iterada, para que al cambiar su estado en cambiarEstadoTarea(), no mute el array de tareas original (VIDEO 638)
+                cambiarEstadoTarea({...tarea}) // ante un click en el boton de estado de una tarea, ejecuto la funcion que hara un UPDATE en la DB; le paso un objeto-copia identico al de la tarea iterada durante el proceso de renderizacion de tareas, para que al cambiar su estado en cambiarEstadoTarea(), no mute el array de tareas original (VIDEO 638)
             }
             
             // boton de eliminar tarea
@@ -118,14 +118,14 @@
         // ver 4-lp-2023-uptask-php-mysql-mvc.txt -> VIDEO 618 
         modal.addEventListener('click', function(e){ // VIDEO 618
             e.preventDefault();
-            if(e.target.classList.contains('cerrar-modal')){
+            if(e.target.classList.contains('cerrar-modal')){ // click en el boton de cancelar, del form de crear tarea
                 const formulario = document.querySelector('.formulario');
                 formulario.classList.add('cerrar');
                 setTimeout(() => {
                     modal.remove();
                 }, 500);
             }
-            if(e.target.classList.contains('submit-nueva-tarea')){
+            if(e.target.classList.contains('submit-nueva-tarea')){ // click en el submit del form de crear tarea
                 submitFormularioNuevaTarea();
             }
             function submitFormularioNuevaTarea(){
@@ -202,7 +202,7 @@
                 tareas = [...tareas, tareaObj];
                 
                 console.clear()
-                console.log(tareas);
+                //console.log(tareas);
                 
                 mostrarTareas();
             }
@@ -215,7 +215,7 @@
     function cambiarEstadoTarea(tarea) { // recibe una copia identica del objeto-tarea iterado en la renderizacion de las tareas (mostrarTareas())
         const nuevoEstado = tarea.estado === "1" ? "0" : "1";
         tarea.estado = nuevoEstado
-        actualizarTarea(tarea)
+        actualizarTarea(tarea, nuevoEstado)
     }
 
     async function actualizarTarea(tarea) { // UPDATE del estado de una tarea de un proyecto
@@ -232,13 +232,22 @@
                 body: datos
             });
             const resultado = await respuesta.json();
-            console.log(resultado.respuesta);
+            //console.log(resultado.respuesta);
             if(resultado.respuesta.tipo === "exito") {
-                const legendFormCrearTarea = document.querySelector('.contenedor-nueva-tarea');
+                const referencia = document.querySelector('.contenedor-nueva-tarea');
                 const {mensaje, tipo} = resultado.respuesta
-                console.log(mensaje);
-                console.log(tipo);
-                mostrarAlerta(mensaje, tipo, legendFormCrearTarea)
+                //mostrarAlerta(mensaje, tipo, referencia) // alerta en la vista que indica que el estado de una tarea se actualizo correcyamente
+
+                // bloque para actualizar el color y leyenda del boton de estado de una tarea
+                tareas = tareas.map(tareaMemoria =>{
+                    if(tareaMemoria.id === id){
+                        tareaMemoria.estado = estado
+                    }
+                    return tareaMemoria
+                })
+                mostrarTareas()
+                // fin bloque para actualizar el color y leyenda del boton de estado de una tarea
+
             }
             
         } catch (error) {
