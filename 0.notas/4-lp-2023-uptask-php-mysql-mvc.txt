@@ -259,3 +259,17 @@ datos.append('nombre', nombre);
 for (let valor of datos.values()){
     console.log(valor);
 }
+
+-----
+
+VIDEO 642 
+
+alerta nativo de JavaScript (retorna TRUE o FALSE) vvv 
+
+const respuesta = confirm("¿Eliminar Tarea?")
+console.log(respuesta);
+
+Instalamos Sweet Alert via CDN
+
+documentacion vvv
+https://sweetalert2.github.io/

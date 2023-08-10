@@ -72,6 +72,9 @@
             btnEliminarTarea.classList.add("eliminar-tarea");
             btnEliminarTarea.dataset.idTarea = tarea.id;
             btnEliminarTarea.textContent = "Eliminar";
+            btnEliminarTarea.ondblclick = function() {
+                confirmarEliminarTarea({...tarea}) 
+            }
             
             opcionesDiv.appendChild(btnEstadoTarea);
             opcionesDiv.appendChild(btnEliminarTarea);
@@ -252,6 +255,29 @@
             
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    function confirmarEliminarTarea(tarea) {
+        Swal.fire({
+            title: "¿Eliminar Tarea?",
+            confirmButtonText: "Sí",
+            showCancelButton: true,
+            cancelButtonText: "No"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarTarea(tarea)
+            } 
+        })
+    }
+
+    async function eliminarTarea(tarea) {
+        console.log(tarea);
+        const datos = new FormData();
+        try {
+            
+        } catch (error) {
+            
         }
     }
 
