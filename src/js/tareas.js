@@ -9,8 +9,13 @@
     // boton para mostrar la Ventana Modal para agregar una tarea 
     const nuevaTareaBtn = document.querySelector('#agregar-tarea');
     
-    // quedo escuchando por un click en el boton de crear nueva tarea, en la vista de un proyecto
-    nuevaTareaBtn.addEventListener('click', mostrarFormulario);
+    // una forma de quedar escuchando por un click en el boton de crear nueva tarea, en la vista de un proyecto, y en ese caso ejecutar la funcion mostrarFormulario (con esta sintaxis, al ejecutar mostrarFormulario le estamos pasando el event implicitamente como parametro)
+    // nuevaTareaBtn.addEventListener('click', mostrarFormulario);
+    
+    // otra forma de hacer lo de arriba, con la diferencia que de esta manera no le estamos pasando nada implicitamente como parametro a mostrarFormulario (VIDEO 644)
+    nuevaTareaBtn.addEventListener('click', function(){
+        mostrarFormulario()
+    });
     
     async function obtenerTareas(){
         try {
@@ -53,6 +58,9 @@
 
             const nombreTarea = document.createElement("P");
             nombreTarea.textContent = tarea.nombre;
+            nombreTarea.ondblclick = function(){
+                mostrarFormulario(true, tarea) // ejecutamos mostrarFormulario al momento del click sobre el nombre de una tarea, para que el usuario pueda editar el nombre (VIDEO 644)
+            }
 
             const opcionesDiv = document.createElement("DIV");
             opcionesDiv.classList.add("opciones");
@@ -85,26 +93,31 @@
             listadoTareas.appendChild(contenedorTarea);
         })
     }
-    function mostrarFormulario(){
+
+    function mostrarFormulario(editar = false, tarea = {}){
+
+        console.log(tarea)
+        
         const modal = document.createElement('DIV');
         modal.classList.add('modal');
         modal.innerHTML = `
             <form class="formulario nueva-tarea">
-                <legend>Añade una nueva tarea</legend>
+                <legend>${ editar ? 'Editar tarea' : 'Añade una nueva tarea'}</legend>
                 <div class="campo">
                     <label for="tarea">Tarea</label>
                     <input 
                         type="text"
                         id="tarea"
-                        placeholder="Añadir Tarea al Proyecto Actual"
+                        placeholder="${ editar ? 'Edita la tarea' : 'Añadir Tarea al Proyecto Actual' }"
                         name="tarea"
+                        value="${ tarea.nombre ? tarea.nombre : '' }"
                     >
                 </div>
                 <div class="opciones">
                     <input 
                         type="submit"
                         class="submit-nueva-tarea"
-                        value="Añadir Tarea"
+                        value="${ editar ? 'Guardar Cambios' : 'Añadir Tarea' }"
                     >
                     <button type="button" class="cerrar-modal">Cancelar</button>
                 </div>
@@ -142,6 +155,7 @@
             }
         })        
     }
+
     // muestra un mensaje en la interfaz (VIDEO 621)
     function mostrarAlerta(mensaje, tipo, referencia){
         const alertaPrevia = document.querySelector('.alerta')
