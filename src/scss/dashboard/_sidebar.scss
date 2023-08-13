@@ -2,8 +2,12 @@
 @use "base/mixins" as m;
 
 .sidebar {
+    display: none;
     padding: 2rem;
     background-color: v.$indigo;
+    @include m.tablet {
+        display: block
+    };
     h2 {
         margin: 0;
         text-align: center;

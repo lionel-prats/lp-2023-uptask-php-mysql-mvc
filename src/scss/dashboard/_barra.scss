@@ -2,14 +2,37 @@
 @use "base/mixins" as m;
 
 
+.barra-mobile {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem 4rem;
+    background-color: v.$indigo;
+    @include m.tablet {
+        display: none;
+    };
+    h1 {
+        margin: 0;
+        color: v.$blanco;
+    }
+    .menu {
+        img {
+            width: .8rem;
+        }
+    }
+
+
+}
+
 .barra {
-    padding: 1rem 2rem;
-    background-color: v.$blanco;
-    box-shadow: 1px 12px 9px -13px rgba(0, 0, 0, .4);
+    display: none;
     @include m.tablet {
         display: flex;
         justify-content: space-between;
         align-items: center;
+        padding: 1rem 2rem;
+        background-color: v.$blanco;
+        box-shadow: 1px 12px 9px -13px rgba(0, 0, 0, .4);
     };
     p {
         margin: 0;
