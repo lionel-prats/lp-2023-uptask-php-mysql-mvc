@@ -64,7 +64,11 @@ class DashboardController {
             $usuario->sincronizar($_POST);
             $alertas = $usuario->validar_perfil();    
             if(empty($alertas)){
-                // guardar el usuario
+                $usuario->guardar();
+                $_SESSION["nombre"] = $usuario->nombre;
+                $_SESSION["email"] = $usuario->email;
+                Usuario::setAlerta("exito", "Cambios guardados correctamente");
+                $alertas = Usuario::getAlertas();
             }
         }
 
