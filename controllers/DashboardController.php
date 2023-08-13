@@ -49,7 +49,6 @@ class DashboardController {
             'titulo' => $proyecto->proyecto
         ]);
     }
-
     public static function perfil(Router $router) {
         isAuth();
 
@@ -79,6 +78,38 @@ class DashboardController {
         $router->render("dashboard/perfil", [
             'titulo' => 'Perfil',
             "usuario" => $usuario,
+            "alertas" => $alertas
+        ]);
+    }
+    public static function cambiar_password(Router $router) {
+        isAuth();
+
+        $alertas = [];
+
+        // $usuario = Usuario::find($_SESSION["id"]);
+
+        // if($_SERVER["REQUEST_METHOD"] === "POST") {
+            
+        //     $usuario->sincronizar($_POST);
+        //     $alertas = $usuario->validar_perfil();    
+        //     if(empty($alertas)){
+        //         $existeUsuario = Usuario::where("email", $usuario->email);
+        //         if($existeUsuario && $existeUsuario->id !== $usuario->id) {
+        //             Usuario::setAlerta("error", "EL mail ingresado ya se encuentra registrado");
+        //             $alertas = Usuario::getAlertas();
+        //         } else {
+        //             $usuario->guardar();
+        //             $_SESSION["nombre"] = $usuario->nombre;
+        //             $_SESSION["email"] = $usuario->email;
+        //             Usuario::setAlerta("exito", "Cambios guardados correctamente");
+        //             $alertas = Usuario::getAlertas();
+        //         }
+        //     }
+        // }
+
+        $router->render("dashboard/cambiar-password", [
+            'titulo' => 'Cambiar Password',
+            // "usuario" => $usuario,
             "alertas" => $alertas
         ]);
     }

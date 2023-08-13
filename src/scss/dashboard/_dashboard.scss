@@ -32,4 +32,12 @@
             text-transform: uppercase;
         }
     }
+
+    .enlace {
+        font-weight: 600;
+        color: v.$indigo;
+        &:hover {
+            color: darken(v.$indigo, 20%);
+        }
+    }
 }
