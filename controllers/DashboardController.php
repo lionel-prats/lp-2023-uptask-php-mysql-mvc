@@ -4,6 +4,7 @@ namespace Controllers;
 
 use MVC\Router;
 use Model\Proyecto;
+use Model\Usuario;
 
 class DashboardController {
     public static function index(Router $router) {
@@ -48,12 +49,29 @@ class DashboardController {
             'titulo' => $proyecto->proyecto
         ]);
     }
+
+
+
     public static function perfil(Router $router) {
         isAuth();
+
+        $alertas = [];
+
+        $usuario = Usuario::find($_SESSION["id"]);
+
+        if($_SERVER["REQUEST_METHOD"] === "POST") {
+            
+            $usuario->sincronizar($_POST);
+            $alertas = $usuario->validar_perfil();    
+            if(empty($alertas)){
+                // guardar el usuario
+            }
+        }
+
         $router->render("dashboard/perfil", [
             'titulo' => 'Perfil',
-            "alertas" => [],
-            "usuario" => $_SESSION
+            "usuario" => $usuario,
+            "alertas" => $alertas
         ]);
     }
 }
