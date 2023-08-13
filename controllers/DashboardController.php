@@ -94,7 +94,16 @@ class DashboardController {
             $usuario->sincronizar($_POST); // sincronizo el objeto que representa al usuario logueado, cargando en los atributos $password_actual y $password_actual (CONSTRUCTOR Usuario) los passwords que el cliente cargo en los inputs de actualizar password
             $alertas = $usuario->nuevo_password();
             if(empty($alertas)){
+                $resultado = $usuario->comprobarPassword($usuario->password_actual);
+                if(!$resultado) {
+                    Usuario::setAlerta("error", "Credenciales inválidas");
+                    $alertas = Usuario::getAlertas();
+                    
+                } else {
 
+                    debuguear($usuario->password_nuevo);
+                }
+                
             }
         }
 

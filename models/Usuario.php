@@ -80,7 +80,7 @@ class Usuario extends ActiveRecord {
         return self::$alertas; 
     }
 
-    public function nuevo_password() {
+    public function nuevo_password() : array {
         if( !$this->password_actual || !$this->password_nuevo || strlen($this->password_actual) < 6 || strlen($this->password_nuevo) < 6 ) {
             self::$alertas["error"][] = "Todos los campos son obligatorios y de un mínimo de 6 caracteres";
         } 
@@ -88,16 +88,16 @@ class Usuario extends ActiveRecord {
     }
 
     // hashear password
-    public function hashPassword() {
+    public function hashPassword() : void {
         $this->password = password_hash($this->password, PASSWORD_BCRYPT);
         return;
     }
     // token para creacion de cuenta
-    public function creartoken() {
+    public function creartoken() : void {
         $this->token = md5(uniqid());
         return;
     }
-    public function comprobarPassword($password) { 
+    public function comprobarPassword($password) : bool { 
         $resultado = password_verify($password, $this->password);
         return $resultado;
     }
