@@ -23,6 +23,9 @@
             display: none
         };
     }
+    &.ocultar {
+        opacity: 0;
+    }
 
     @include m.tablet {
         height: 100%;
@@ -31,11 +34,29 @@
         background-color: v.$indigo;
     };
 
-    h2 {
-        margin: 0;
-        text-align: center;
-        color: v.$blanco;
+    .contenedor-sidebar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        .cerrar-menu {
+            display: flex;
+            justify-content: center;
+            width: 2rem;
+            height: 2rem;
+            img {
+                &:hover{
+                    cursor: pointer;
+                }
+            }
+        }
+        h2 {
+            margin: 0;
+            text-align: center;
+            color: v.$blanco;
+        }
     }
+
+    
     .sidebar-nav {
         margin-top: 5rem;
         a {
