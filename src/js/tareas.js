@@ -251,15 +251,21 @@
                 body: datos
             });
             const resultado = await respuesta.json();
-            // console.log(resultado.respuesta);
+            
             if(resultado.respuesta.tipo === "exito") {
-                const referencia = document.querySelector('.contenedor-nueva-tarea');
-                const {mensaje, tipo} = resultado.respuesta
-                // mostrarAlerta(mensaje, tipo, referencia) // alerta en la vista que indica que el estado de una tarea se actualizo correcyamente
+                Swal.fire(
+                    resultado.respuesta.mensaje, 
+                    "", 
+                    "success"
+                )
+
+                const modal = document.querySelector('.modal');
+                if (modal) modal.remove()
 
                 // bloque para actualizar el color y leyenda del boton de estado de una tarea
                 tareas = tareas.map(tareaMemoria =>{
                     if(tareaMemoria.id === id){
+                        tareaMemoria.nombre = nombre
                         tareaMemoria.estado = estado
                     }
                     return tareaMemoria
