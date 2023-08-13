@@ -88,24 +88,15 @@ class DashboardController {
 
         // $usuario = Usuario::find($_SESSION["id"]);
 
-        // if($_SERVER["REQUEST_METHOD"] === "POST") {
+        if($_SERVER["REQUEST_METHOD"] === "POST") {
             
-        //     $usuario->sincronizar($_POST);
-        //     $alertas = $usuario->validar_perfil();    
-        //     if(empty($alertas)){
-        //         $existeUsuario = Usuario::where("email", $usuario->email);
-        //         if($existeUsuario && $existeUsuario->id !== $usuario->id) {
-        //             Usuario::setAlerta("error", "EL mail ingresado ya se encuentra registrado");
-        //             $alertas = Usuario::getAlertas();
-        //         } else {
-        //             $usuario->guardar();
-        //             $_SESSION["nombre"] = $usuario->nombre;
-        //             $_SESSION["email"] = $usuario->email;
-        //             Usuario::setAlerta("exito", "Cambios guardados correctamente");
-        //             $alertas = Usuario::getAlertas();
-        //         }
-        //     }
-        // }
+            $usuario = Usuario::find($_SESSION["id"]); 
+            $usuario->sincronizar($_POST); // sincronizo el objeto que representa al usuario logueado, cargando en los atributos $password_actual y $password_actual (CONSTRUCTOR Usuario) los passwords que el cliente cargo en los inputs de actualizar password
+            $alertas = $usuario->nuevo_password();
+            if(empty($alertas)){
+
+            }
+        }
 
         $router->render("dashboard/cambiar-password", [
             'titulo' => 'Cambiar Password',

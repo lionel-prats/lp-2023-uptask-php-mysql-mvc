@@ -13,6 +13,8 @@ class Usuario extends ActiveRecord {
     public $password2;
     public $token;
     public $confirmado;
+    public $password_actual;
+    public $password_nuevo;
 
     public function __construct($args = [])
     {
@@ -21,6 +23,8 @@ class Usuario extends ActiveRecord {
         $this->email = $args['email'] ?? '';
         $this->password = $args['password'] ?? '';
         $this->password2 = $args['password2'] ?? '';
+        $this->password_actual = $args['password_actual'] ?? '';
+        $this->password_nuevo = $args['password_nuevo'] ?? '';
         $this->token = $args['token'] ?? '';
         $this->confirmado = $args['confirmado'] ?? '0';
     }
@@ -73,6 +77,13 @@ class Usuario extends ActiveRecord {
             self::$alertas["error"][] = "El nombre es obligatorio";
         } 
         $this->validarEmail();
+        return self::$alertas; 
+    }
+
+    public function nuevo_password() {
+        if( !$this->password_actual || !$this->password_nuevo || strlen($this->password_actual) < 6 || strlen($this->password_nuevo) < 6 ) {
+            self::$alertas["error"][] = "Todos los campos son obligatorios y de un mínimo de 6 caracteres";
+        } 
         return self::$alertas; 
     }
 
