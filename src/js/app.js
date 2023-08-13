@@ -15,3 +15,12 @@ if (cerrarMenuBtn) {
         }, 1000);
     })
 }
+
+// elimina la clase de mostrar en un tamaño de tablets y mayores (VIDEO 656)
+// ver apartado "VIDEO 656" para mayor informacion
+window.addEventListener("resize", function (e){
+    const anchoPantalla = document.body.clientWidth 
+    if(anchoPantalla >= 768) {
+        sidebar.classList.remove("mostrar")
+    }
+})

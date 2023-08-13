@@ -282,3 +282,18 @@ Use la libreria Animate.css combinada con SweetAlert para tener una ventana de a
 
 documentacion Animate.css vvv 
 https://animate.style/
+
+----- 
+
+VIDEO 656
+
+* console.log(document.body.clientWidth); // ancho en pixeles de <body>
+* console.log(document.body.clientHeight); // alto en pixeles de <body>
+
+const capturaDePrueba = document.querySelector("#agregar-tarea")
+* console.log(capturaDePrueba.clientWidth); // ancho en pixeles de <element id="agregar-tarea">
+* console.log(capturaDePrueba.clientHeight); // ancho en pixeles de <element id="agregar-tarea">
+
+* El objeto document hace referencia al codigo HTML 
+* El objeto window hace referencia atodo el document + todo el javascript
+
