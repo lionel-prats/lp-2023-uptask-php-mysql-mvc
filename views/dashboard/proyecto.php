@@ -1,4 +1,4 @@
-<?php include_once __DIR__ . '/header-dashboard.php'; ?>
+<?php include_once __DIR__ . '/header-dashboard.php'; ?><!-- sidebar, barra superior y titulo de cada pagina -->
 <div class="contenedor-sm">
     <div class="contenedor-nueva-tarea">
         <button
@@ -56,10 +56,10 @@
         -->
     </ul>
 </div>
-<?php include_once __DIR__ . '/footer-dashboard.php'; ?>
+<?php include_once __DIR__ . '/footer-dashboard.php'; ?><!-- etiquetas de cierre de los <div> abiertos en header-dashboard.php -->
 <?php 
     $link = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>';
-    $script = '
+    $script .= '
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script src="build/js/tareas.js"></script>
     ';
