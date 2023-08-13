@@ -98,10 +98,23 @@ class DashboardController {
                 if(!$resultado) {
                     Usuario::setAlerta("error", "Credenciales inválidas");
                     $alertas = Usuario::getAlertas();
-                    
                 } else {
 
-                    debuguear($usuario->password_nuevo);
+                    $usuario->password = $usuario->password_nuevo;
+                    
+                    // elimino propiedades no necesarias
+                    unset($usuario->password_actual); 
+                    unset($usuario->password_nuevo);
+                    
+                    $usuario->hashPassword();
+                    
+                    $resultado = $usuario->guardar();
+
+                    if($resultado) {
+                        Usuario::setAlerta("exito", "Contraseña modificada exitosamente");
+                        $alertas = Usuario::getAlertas();
+                    }
+                    
                 }
                 
             }
