@@ -51,7 +51,9 @@ class DashboardController {
     public static function perfil(Router $router) {
         isAuth();
         $router->render("dashboard/perfil", [
-            'titulo' => 'Perfil'
+            'titulo' => 'Perfil',
+            "alertas" => [],
+            "usuario" => $_SESSION
         ]);
     }
 }
