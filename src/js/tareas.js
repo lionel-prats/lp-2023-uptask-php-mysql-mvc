@@ -6,6 +6,8 @@
     // array que va a tener el listado de tareas asociadas a un proyecto (cada tarea es un objeto que viene de la peticion a /api/tareas?id=xxx), y que se va a actualizar cada vez que el usuario agregue una nueva tarea (nos evitamos peticiones al SERVER) // VIDEO 637
     let tareas = []; // ver apartado del VIDEO 637 en 4-lp-2023-uptask-php-mysql-mvc.txt 
 
+    let filtradas = []
+
     // boton para mostrar la Ventana Modal para agregar una tarea 
     const nuevaTareaBtn = document.querySelector('#agregar-tarea');
     
@@ -16,6 +18,24 @@
     nuevaTareaBtn.addEventListener('click', function(){
         mostrarFormulario()
     });
+
+    // filtros de busqueda 
+    const filtros = document.querySelectorAll("#filtros input[type='radio']");
+
+    // escuchando por click en los filtros de tarea (VIDEO 649)
+    filtros.forEach( radio => {
+        radio.addEventListener("input", filtrarTareas) // cuando mandamos a ejecutar una funcion con esta sintaxis estamos pasandole implicitamente el evento (VIDEO 649)
+    })
+
+    function filtrarTareas(e){
+        const filtro = e.target.value
+        if(filtro !== ""){
+            filtradas = tareas.filter( tarea => tarea.estado === filtro) 
+        } else {
+           filtradas = []
+        }
+        mostrarTareas()
+    }
     
     async function obtenerTareas(){
         try {
@@ -38,7 +58,11 @@
     // la funcion mostrarTareas renderiza las tareas de un proyecto en http://localhost:3000/proyecto?id=xxx
     function mostrarTareas(){
         limpiarTareas(); // vacío el <ul id="listado-tareas" class="listado-tareas">, contenedor de todas las tareas asociadas a un proyecto, para renderizarlas nuevamente con la posible actualizacion de una nueva tarea creada por el usuario
-        if(tareas.length === 0){
+
+        const arrayTareas = filtradas.length ? filtradas : tareas
+        console.log(filtradas);
+
+        if(arrayTareas.length === 0){
             const contenedorTareas = document.querySelector("#listado-tareas")
             const textoNoTareas = document.createElement("LI")
             textoNoTareas.textContent = "No hay tareas"
@@ -50,7 +74,7 @@
             0: "Pendiente",
             1: "Completa"
         }
-        tareas.forEach( tarea => {
+        arrayTareas.forEach( tarea => {
             // console.log(tarea);
             const contenedorTarea = document.createElement("LI")
             contenedorTarea.dataset.tareaId = tarea.id
@@ -251,7 +275,7 @@
                 body: datos
             });
             const resultado = await respuesta.json();
-            
+
             if(resultado.respuesta.tipo === "exito") {
                 Swal.fire(
                     resultado.respuesta.mensaje, 
