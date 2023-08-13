@@ -9,7 +9,7 @@
     // boton para mostrar la Ventana Modal para agregar una tarea 
     const nuevaTareaBtn = document.querySelector('#agregar-tarea');
     
-    // una forma de quedar escuchando por un click en el boton de crear nueva tarea, en la vista de un proyecto, y en ese caso ejecutar la funcion mostrarFormulario (con esta sintaxis, al ejecutar mostrarFormulario le estamos pasando el event implicitamente como parametro)
+    // una forma de quedar escuchando por un click en el boton de crear nueva tarea, en la vista de un proyecto, y en ese caso ejecutar la funcion mostrarFormulario (con esta sintaxis, al ejecutar mostrarFormulario le estamos pasando el event implicitamente como parametro) (esta opcion estuvo descomentada hasta el VIDEO 643. En el 644, el profesor comenta esta forma y escribe la de abajo, ya que es necesario no pasar nada implicitamente cuando se ejecute mostrarFormulario para poder reutilizar el form tanto para crear como para editar una tarea - ver video 644 si es necesario -)
     // nuevaTareaBtn.addEventListener('click', mostrarFormulario);
     
     // otra forma de hacer lo de arriba, con la diferencia que de esta manera no le estamos pasando nada implicitamente como parametro a mostrarFormulario (VIDEO 644)
@@ -59,7 +59,7 @@
             const nombreTarea = document.createElement("P");
             nombreTarea.textContent = tarea.nombre;
             nombreTarea.ondblclick = function(){
-                mostrarFormulario(true, tarea) // ejecutamos mostrarFormulario al momento del click sobre el nombre de una tarea, para que el usuario pueda editar el nombre (VIDEO 644)
+                mostrarFormulario(editar = true, {... tarea}) // ejecutamos mostrarFormulario al momento del click sobre el nombre de una tarea, para que el usuario pueda editar el nombre (VIDEO 644)
             }
 
             const opcionesDiv = document.createElement("DIV");
@@ -95,8 +95,6 @@
     }
 
     function mostrarFormulario(editar = false, tarea = {}){
-
-        console.log(tarea)
         
         const modal = document.createElement('DIV');
         modal.classList.add('modal');
@@ -142,16 +140,19 @@
                 }, 500);
             }
             if(e.target.classList.contains('submit-nueva-tarea')){ // click en el submit del form de crear tarea
-                submitFormularioNuevaTarea();
-            }
-            function submitFormularioNuevaTarea(){
-                const tarea = document.querySelector('#tarea').value.trim(); // value del input en el formulario modal de creacion de nueva tarea
-                if(tarea === '') {
+
+                const nombreTarea = document.querySelector('#tarea').value.trim(); // value del input en el formulario modal de creacion de nueva tarea
+                if(nombreTarea === '') {
                     const legendFormCrearTarea = document.querySelector('.formulario legend');
                     mostrarAlerta('El nombre de la tarea es obligatorio', 'error', legendFormCrearTarea);
                     return;
                 }
-                agregarTarea(tarea); // ejecutamos la funcion que hara un CREATE en tareas
+                if(editar) {
+                    tarea.nombre = nombreTarea
+                    actualizarTarea(tarea)
+                } else {
+                    agregarTarea(nombreTarea)
+                }
             }
         })        
     }
@@ -172,7 +173,7 @@
     }
     // Fetch al servidor para agregar una tarea a la tabla tareas
     async function agregarTarea(tarea){
-        // identificador del proyecto al cual le vamos a agrregar una tarea (tabla "proyectos", campo "url")
+        // identificador del proyecto al cual le vamos a agregar una tarea (tabla "proyectos", campo "url")
         proyecto = obtenerProyecto(); // esta funcion me retorna el token (esta en la URL de la vista del proyecto) en la DB del proyecto para el cual quiero agregar una tarea nueva
 
         const datos = new FormData(); // objeto nativo de JS para enviar datos al servidor (VIDEO 517)
@@ -236,6 +237,7 @@
     }
 
     async function actualizarTarea(tarea) { // UPDATE del estado de una tarea de un proyecto
+
         const {id, nombre, estado, proyectoId} = tarea
         const datos = new FormData(); 
         datos.append('id', id);
@@ -249,11 +251,11 @@
                 body: datos
             });
             const resultado = await respuesta.json();
-            //console.log(resultado.respuesta);
+            // console.log(resultado.respuesta);
             if(resultado.respuesta.tipo === "exito") {
                 const referencia = document.querySelector('.contenedor-nueva-tarea');
                 const {mensaje, tipo} = resultado.respuesta
-                //mostrarAlerta(mensaje, tipo, referencia) // alerta en la vista que indica que el estado de una tarea se actualizo correcyamente
+                // mostrarAlerta(mensaje, tipo, referencia) // alerta en la vista que indica que el estado de una tarea se actualizo correcyamente
 
                 // bloque para actualizar el color y leyenda del boton de estado de una tarea
                 tareas = tareas.map(tareaMemoria =>{
