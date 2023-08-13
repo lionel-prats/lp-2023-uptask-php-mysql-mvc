@@ -50,8 +50,6 @@ class DashboardController {
         ]);
     }
 
-
-
     public static function perfil(Router $router) {
         isAuth();
 
@@ -64,11 +62,17 @@ class DashboardController {
             $usuario->sincronizar($_POST);
             $alertas = $usuario->validar_perfil();    
             if(empty($alertas)){
-                $usuario->guardar();
-                $_SESSION["nombre"] = $usuario->nombre;
-                $_SESSION["email"] = $usuario->email;
-                Usuario::setAlerta("exito", "Cambios guardados correctamente");
-                $alertas = Usuario::getAlertas();
+                $existeUsuario = Usuario::where("email", $usuario->email);
+                if($existeUsuario && $existeUsuario->id !== $usuario->id) {
+                    Usuario::setAlerta("error", "EL mail ingresado ya se encuentra registrado");
+                    $alertas = Usuario::getAlertas();
+                } else {
+                    $usuario->guardar();
+                    $_SESSION["nombre"] = $usuario->nombre;
+                    $_SESSION["email"] = $usuario->email;
+                    Usuario::setAlerta("exito", "Cambios guardados correctamente");
+                    $alertas = Usuario::getAlertas();
+                }
             }
         }
 
