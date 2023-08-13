@@ -297,3 +297,10 @@ const capturaDePrueba = document.querySelector("#agregar-tarea")
 * El objeto document hace referencia al codigo HTML 
 * El objeto window hace referencia atodo el document + todo el javascript
 
+-----
+
+VIDEO 665 
+
+Ultima seccion del proyecto 
+Explica una de las formas de implementar modo oscuro, en este caso, a partir de las preferencias del usuario en su sistema operativo 
+*** por alguna razon, no puedo cambiar a modo oscuro mi sistema operativo (puede que tenga que ver con no tener corriendo Windows original)

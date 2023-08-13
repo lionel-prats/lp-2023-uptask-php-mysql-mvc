@@ -114,9 +114,7 @@ class DashboardController {
                         Usuario::setAlerta("exito", "Contraseña modificada exitosamente");
                         $alertas = Usuario::getAlertas();
                     }
-                    
                 }
-                
             }
         }
 
