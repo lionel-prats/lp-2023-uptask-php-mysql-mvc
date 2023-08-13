@@ -9,5 +9,8 @@
         <a class="<?php echo ($titulo === 'Proyectos') ? 'activo' : ''; ?>" href="/dashboard">Proyectos</a>
         <a class="<?php echo $titulo === 'Crear Proyecto' ? 'activo' : ''; ?>" href="/crear-proyecto">Crear Proyectos</a>
         <a class="<?php echo $titulo === 'Perfil' ? 'activo' : ''; ?>" href="/perfil">Perfil</a>
+        <div class="cerrar-sesion-mobile">
+            <a href="/logout" class="cerrar-sesion">Cerrar Sesión</a>
+        </div>
     </nav>
 </aside>

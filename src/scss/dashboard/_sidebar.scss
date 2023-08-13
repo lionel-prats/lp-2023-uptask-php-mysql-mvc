@@ -48,6 +48,9 @@
                     cursor: pointer;
                 }
             }
+            @include m.tablet {
+                display: none
+            };
         }
         h2 {
             margin: 0;
@@ -62,13 +65,20 @@
         a {
             display: block;
             padding: .7rem;
-            margin-bottom: 1.5rem;
-            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            font-size: 2.4rem;
             font-weight: bold;
+            text-align: center;
             text-transform: uppercase;
             color: v.$blanco;
             transition-property: background-color;
             transition-duration: 300ms;
+
+            @include m.tablet {
+                margin-bottom: 1.5rem;
+                font-size: 1.2rem;
+                text-align: left;
+            };
 
             &:hover,
             &.activo {
@@ -76,6 +86,16 @@
                 background-color: darken(v.$indigo, 20%);
             }
             
+        }
+
+        .cerrar-sesion-mobile {
+            margin-top: 10rem;
+            @include m.tablet {
+                display: none
+            };
+            .cerrar-sesion {
+                @include m.boton(v.$indigo, v.$blanco);
+            }
         }
         
     }
