@@ -59,8 +59,11 @@
     function mostrarTareas(){
         limpiarTareas(); // vacío el <ul id="listado-tareas" class="listado-tareas">, contenedor de todas las tareas asociadas a un proyecto, para renderizarlas nuevamente con la posible actualizacion de una nueva tarea creada por el usuario
 
+        totalPendientes() 
+        totalCompletas() 
+
         const arrayTareas = filtradas.length ? filtradas : tareas
-        console.log(filtradas);
+        //console.log(filtradas);
 
         if(arrayTareas.length === 0){
             const contenedorTareas = document.querySelector("#listado-tareas")
@@ -116,6 +119,25 @@
             const listadoTareas = document.querySelector("#listado-tareas");
             listadoTareas.appendChild(contenedorTarea);
         })
+    }
+
+    function totalPendientes() {
+        const totalPendientes = tareas.filter( tarea => tarea.estado === "0")
+        const pendientesRadio = document.querySelector("#pendientes")
+        if(totalPendientes.length === 0){
+            pendientesRadio.disabled = true
+        } else {
+            pendientesRadio.disabled = false
+        }
+    }
+    function totalCompletas() {
+        const totalCompletas = tareas.filter( tarea => tarea.estado === "1")
+        const completasRadio = document.querySelector("#completadas")
+        if(totalCompletas.length === 0){
+            completasRadio.disabled = true
+        } else {
+            completasRadio.disabled = false
+        }
     }
 
     function mostrarFormulario(editar = false, tarea = {}){
